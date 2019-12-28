@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanapson.Android", "Kanapson\Kanapson.Android\Kanapson.Android.csproj", "{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kanapson", "Kanapson\Kanapson\Kanapson.csproj", "{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76C19F1D-0D2D-4EC9-ABFC-43AE43CB82F0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DFFC05A-0A68-479D-B291-BC522CF3E8E6}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C4B23C86-2FB8-4179-BC3B-CF6E53F70F3F}
+	EndGlobalSection
+EndGlobal

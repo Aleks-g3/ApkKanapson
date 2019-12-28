@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ViewCell xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Kanapson.WybierzProdukt">
+  <ViewCell.View>
+        <StackLayout Padding="50,100,50,0">
+            
+            <ListView>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Label Text="Name"/>
+                                <Label Text="{Binding Name}" FontAttributes="Bold"/>
+                                <Label Text="Description"/>
+                                <Label Text="{Binding Description}" FontAttributes="Bold"/>
+                                <Label Text="Price" />
+                                <Label Text="{Binding Price}" FontAttributes="Bold"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+        </StackLayout>
+  </ViewCell.View>
+</ViewCell>
