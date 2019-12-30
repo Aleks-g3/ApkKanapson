@@ -4,11 +4,10 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Kanapson.Myorders">
+             x:Class="Kanapson.ListOrders">
     <ContentPage.Content>
-        <StackLayout Margin="0" IsEnabled="False">
-            
-            <ListView x:Name="myorders" Scrolled="myorders_Scrolled">
+        <StackLayout>
+            <ListView x:Name="myorders">
                 <ListView.Header>
                     <Grid Padding="5">
                         <Grid.ColumnDefinitions>
@@ -18,9 +17,12 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Label Text="Id"  Grid.Column="0" Grid.Row="0" />
-                        <Label Text="order time"  Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Status"  Grid.Column="2" Grid.Row="0" LineBreakMode="NoWrap"/>
+                        
+                        <Label Text="czas"  Grid.Column="0" Grid.Row="0"/>
+                        <Label Text="Produkty"  Grid.Column="1" Grid.Row="0"/>
+                        <Label Text="Użytkownik"  Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation"/>
+                        <Label Text="Status"  Grid.Column="3" Grid.Row="0" />
+                        <Label Text="Akcja" Grid.Column="4" Grid.Row="0"/>
                     </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
@@ -34,15 +36,18 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <Label Grid.Column="0" Grid.Row="0"  Text="{Binding Id}" />
-                                <Label Grid.Column="1" Grid.Row="0"  Text="{Binding orderTimes}" />
+                                
+                                <Label Grid.Column="0" Grid.Row="0"  Text="{Binding orderTimes}" />
+                                <Label Grid.Column="1" Grid.Row="0"  Text="{Binding Product_order}" LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="1" Grid.Row="0"  Text="{Binding user}" />
                                 <Label Grid.Column="2" Grid.Row="0"  Text="{Binding Status}" />
+                                <Button x:Name="action" Grid.Column="4" Grid.Row="0" Text="gotowe do odebrania" Clicked="action_Clicked"/>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="back" Text="Powrót" Margin="0,0,200,0" Clicked="back_Clicked"/>
+            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,20" Clicked="Back_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

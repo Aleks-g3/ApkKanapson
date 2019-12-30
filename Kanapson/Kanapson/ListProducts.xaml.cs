@@ -10,19 +10,14 @@ using Xamarin.Forms.Xaml;
 namespace Kanapson
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Myorders : ContentPage
+    public partial class ListProducts : ContentPage
     {
-        public Myorders()
+        public ListProducts()
         {
             InitializeComponent();
         }
 
-        private void myorders_Scrolled(object sender, ScrolledEventArgs e)
-        {
-
-        }
-
-        private void back_Clicked(object sender, EventArgs e)
+        private void update_Clicked(object sender, EventArgs e)
         {
 
         }

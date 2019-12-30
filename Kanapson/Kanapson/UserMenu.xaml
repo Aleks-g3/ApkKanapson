@@ -6,8 +6,9 @@
              mc:Ignorable="d"
              x:Class="Kanapson.UserMenu">
     <StackLayout Padding="50,100,50,0">
-        <Button Text="Dodaj zamowienie"/>
-        <Button Text="Moje zamówienia"/>
-        <Button Text="Zmień hasło"/>
+        <Button x:Name="addorder" Text="Dodaj zamowienie" Clicked="addorder_Clicked"/>
+        <Button x:Name="myorders" Text="Moje zamówienia" Clicked="myorders_Clicked"/>
+        <Button x:Name="changePassword" Text="Zmień hasło" Clicked="changePassword_Clicked"/>
+        <Button x:Name="mycredit"  Text="Stan Konta" Clicked="mycredit_Clicked"/>
     </StackLayout>
 </ContentPage>

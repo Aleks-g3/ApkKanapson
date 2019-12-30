@@ -4,10 +4,10 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Kanapson.AddOrder">
+             x:Class="Kanapson.ListProducts">
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:FieldModifier="public" x:Name="list" Margin="0"  Scrolled="list_Scrolled">
+            <ListView x:FieldModifier="public" x:Name="list" Margin="0">
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -17,10 +17,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Label Text="Name" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
-                        <Label Text="Description" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Count" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
-                        <Label Text="Amount" BackgroundColor="White" Grid.Column="3" Grid.Row="0"/>
+                        <Label Text="Nazwa" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
+                        <Label Text="Opis" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
+                        <Label Text="Ilość" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
                         <Label Text="Akcja" BackgroundColor="White" Grid.Column="4" Grid.Row="0"/>
                     </Grid>
                 </ListView.Header>
@@ -38,23 +37,14 @@
 
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
                                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" LineBreakMode="TailTruncation"></Label>
-                                <Editor x:Name="counter" Grid.Row="0" Grid.Column="2" MaxLength="2"></Editor>
-                                <Label Grid.Row="0" Grid.Column="3" Text="{Binding Amount}" LineBreakMode="NoWrap"></Label>
-                                <Label Grid.Row="0" Grid.Column="4" Text="{Binding Price}" LineBreakMode="NoWrap"></Label>
-                                <Button x:Name="add" Grid.Row="0" Grid.Column="5" Text="Dodaj"></Button>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Amount}" LineBreakMode="NoWrap"></Label>
+                                <Editor x:Name="amount" Grid.Row="0" Grid.Column="3" MaxLength="2"></Editor>
+                                <Button x:Name="update" Grid.Row="0" Grid.Column="4" Text="aktualizuj" Clicked="update_Clicked"/>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="Stan" Margin="20,50,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,0"/>
-            <Label Text="Moj stan konta" Margin="20,0,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,0"/>
-            <Label Text="Pozostanie" Margin="20,0,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,50"/>
-            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,-51" Clicked="Back_Clicked"/>
-            <Button x:Name="AddOrderUser" Text="Zamów" Margin="200,0,0,0" Clicked="AddOrderUser_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

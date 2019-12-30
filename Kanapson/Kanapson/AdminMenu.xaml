@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Kanapson.AdminMenu">
+    <ContentPage.Content>
+        <StackLayout Margin="50,100,50,0">
+            <Button x:Name="addorder" Text="Dodaj Zamówienie" Clicked="addorder_Clicked"/>
+            <Button x:Name="listorders" Text="Lista Zamówień" Clicked="listorders_Clicked"/>
+            <Button x:Name="addproduct" Text="Dodaj Produkt" Clicked="addproduct_Clicked"/>
+            <Button x:Name="listproducts" Text="Magazyn" Clicked="listproducts_Clicked"/>
+            <Button x:Name="adduser" Text="Dodaj Użytkownika" Clicked="adduser_Clicked"/>
+            <Button x:Name="updatecredit" Text="Doładuj Konto"  Clicked="updatecredit_Clicked"/>
+            <Button x:Name="changepassword" Text="Zmień hasło" Clicked="changepassword_Clicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

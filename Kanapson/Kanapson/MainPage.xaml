@@ -7,17 +7,25 @@
              x:Class="Kanapson.MainPage">
 
     <StackLayout Padding="5,0,0,0" Margin="50,100,50,0">
-        <Label Text="Username"/>
-        <Entry />
-        <Label Text="Password"/>
-        <Entry />
-        <Button Text="Login"/>
-        <Label Text="Rarejestruj się" TextColor="Blue" Margin="150,20,0,0">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer>
-                    
-                </TapGestureRecognizer>
-            </Label.GestureRecognizers>
+        <Label Text=""/>
+        <Entry x:Name="username" Placeholder="Username"/>
+        <Entry x:Name="password" Placeholder="Password"/>
+        <Label x:Name="messege"/>
+        <Button Text="Login" Clicked="Button_Clicked"/>
+        <Label Margin="180,0,0,0" BackgroundColor="White">
+            <Label.FormattedText>
+                <FormattedString>
+
+                    <Span Text="Zarejestruj się"
+                  TextColor="Blue"
+                  TextDecorations="Underline">
+                        <Span.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TapCommand}"
+                                          CommandParameter="https://docs.microsoft.com/xamarin/" />
+                        </Span.GestureRecognizers>
+                    </Span>
+                </FormattedString>
+            </Label.FormattedText>
         </Label>
 
     </StackLayout>

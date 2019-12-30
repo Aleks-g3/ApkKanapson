@@ -27,7 +27,7 @@ namespace Kanapson
                 "Item 5"
             };
 
-            MyListView.ItemsSource = Items;
+            //MyListView.ItemsSource = Items;
         }
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -39,6 +39,26 @@ namespace Kanapson
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
+        }
+
+        private void mycredit_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void changePassword_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void myorders_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addorder_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

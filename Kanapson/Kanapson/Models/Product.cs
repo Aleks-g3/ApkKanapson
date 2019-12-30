@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Kanapson
+namespace Kanapson.Models
 {
     public class Product
     {
@@ -10,5 +10,6 @@ namespace Kanapson
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
+        public ushort Amount { get; set; }
     }
 }

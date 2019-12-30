@@ -4,10 +4,10 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Kanapson.AddOrder">
+             x:Class="Kanapson.AddorderAdmin">
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:FieldModifier="public" x:Name="list" Margin="0"  Scrolled="list_Scrolled">
+            <ListView x:FieldModifier="public" x:Name="list" Margin="0"  >
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -47,14 +47,12 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Button x:Name="Card" Text="Karta" Padding="0" Margin="0,0,200,-51"/>
+            <Button x:Name="Cash" Text="Gotówka" Margin="190,0,10,0" />
             <Label Text="Stan" Margin="20,50,0,0"/>
             <Label Text="0.00 zł" Margin="20,0,0,0"/>
-            <Label Text="Moj stan konta" Margin="20,0,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,0"/>
-            <Label Text="Pozostanie" Margin="20,0,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,50"/>
             <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,-51" Clicked="Back_Clicked"/>
-            <Button x:Name="AddOrderUser" Text="Zamów" Margin="200,0,0,0" Clicked="AddOrderUser_Clicked"/>
+            <Button x:Name="AddOrder" Text="Dodaj zamówienie" Margin="190,0,10,0" Clicked="AddOrder_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

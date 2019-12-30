@@ -13,47 +13,37 @@ using Xamarin.Forms.Xaml;
 namespace Kanapson
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AddOrder : ContentPage
+    public partial class UpdateCredit : ContentPage
     {
-        public AddOrder()
+        public UpdateCredit()
         {
             InitializeComponent();
-            
         }
+
         public async void LoadData()
         {
             var content = "";
             HttpClient client = new HttpClient();
-            var RestURL = "http://localhost:4000/products";
+            var RestURL = "http://localhost:4000/users";
             client.BaseAddress = new Uri(RestURL);
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(RestURL);
             content = await response.Content.ReadAsStringAsync();
-            var Items = JsonConvert.DeserializeObject<List<Product>>(content);
+            var Items = JsonConvert.DeserializeObject<List<User>>(content);
             this.FindByName<ListView>("list").ItemsSource = Items;
         }
 
-        private void Back_Clicked(object sender, EventArgs e)
+        private void ppdate_Clicked(object sender, EventArgs e)
         {
 
         }
 
-        private void sum_Clicked(object sender, EventArgs e)
+        private void update_Clicked(object sender, EventArgs e)
         {
 
         }
 
-        private void AddOrder_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void list_Scrolled(object sender, ScrolledEventArgs e)
-        {
-
-        }
-
-        private void AddOrderUser_Clicked(object sender, EventArgs e)
+        private void back_Clicked(object sender, EventArgs e)
         {
 
         }

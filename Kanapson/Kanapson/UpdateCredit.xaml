@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Kanapson.UpdateCredit">
+    <ContentPage.Content>
+        <StackLayout Margin="50,100,50,0">
+            
+            <SearchBar Placeholder="Search username" Keyboard="Default"/>
+            <ListView x:FieldModifier="public" x:Name="list" Margin="0" >
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Firstname}" LineBreakMode="NoWrap"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Lastname}" LineBreakMode="TailTruncation"></Label>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Username}" LineBreakMode="NoWrap"></Label>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Label Text=""  Margin="0,0,0,20"/>
+            <Label Text=""  Margin="0,0,0,20"/>
+            <Label Text=""  Margin="0,0,0,20"/>
+            <Editor x:Name="credit" MaxLength="3" Margin="0,0,0,20"/>
+            <Button x:Name="update" Text="Doładuj" Margin="190,0,0,-50" Clicked="update_Clicked" />
+            <Button x:Name="back" Text="Powrót" Margin="0,0,190,20" Clicked="back_Clicked"/>
+           
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
