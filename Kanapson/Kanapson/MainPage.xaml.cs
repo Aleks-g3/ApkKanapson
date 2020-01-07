@@ -24,9 +24,26 @@ namespace Kanapson
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            User user = new User();
+            
             if(string.IsNullOrWhiteSpace(this.FindByName<Entry>("username").Text)&& string.IsNullOrWhiteSpace(this.FindByName<Entry>("password").Text))
             {
                 this.FindByName<Label>("messege").Text = "błedne";
+            }
+            else
+            {
+                user.Username = this.FindByName<Entry>("Username").Text;
+                user.Password = this.FindByName<Entry>("Password").Text;
+
+                var json = JsonConvert.SerializeObject(user);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = "http://localhost:4000/users/authenticate";
+                HttpClient client = new HttpClient();
+
+                var response = await client.PostAsync(url, data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
             }
         }
 
