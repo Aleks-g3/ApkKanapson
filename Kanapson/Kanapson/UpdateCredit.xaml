@@ -6,36 +6,34 @@
              mc:Ignorable="d"
              x:Class="Kanapson.UpdateCredit">
     <ContentPage.Content>
-        <StackLayout Margin="50,100,50,0">
-            
-            <SearchBar Placeholder="Search username" Keyboard="Default"/>
-            <ListView x:FieldModifier="public" x:Name="list" Margin="0" >
-                
+        <StackLayout>
+
+            <Grid WidthRequest="50">
+                <Entry Placeholder="Nazwa użytkownika" Grid.Row="0" Grid.Column="0"/>
+                <Button Text="Szukaj" Grid.Row="0" Grid.Column="1" Clicked="SearchButton"/>
+            </Grid>
+            <ListView x:Name="listUser" Margin="0" IsRefreshing="False">
+                <ListView.Header>
+                    <Grid>
+                        <Label Text="Username" Grid.Row="0" Grid.Column="0"/>
+                        <Label Text="Kredyt" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="Akcja" Grid.Row="0" Grid.Column="2"/>
+                    </Grid>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid Padding="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Firstname}" LineBreakMode="NoWrap"/>
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Lastname}" LineBreakMode="TailTruncation"></Label>
-                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Username}" LineBreakMode="NoWrap"></Label>
+                            <Grid >
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Username}"/>
+                                <Editor Grid.Row="0" Grid.Column="1" Text="{Binding Credit}"/>
+                                <Button Grid.Row="0" Grid.Column="2" Text="Doładuj" Clicked="update_Clicked"/>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text=""  Margin="0,0,0,20"/>
-            <Label Text=""  Margin="0,0,0,20"/>
-            <Label Text=""  Margin="0,0,0,20"/>
-            <Editor x:Name="credit" MaxLength="3" Margin="0,0,0,20"/>
-            <Button x:Name="update" Text="Doładuj" Margin="190,0,0,-50" Clicked="update_Clicked" />
+
+
             <Button x:Name="back" Text="Powrót" Margin="0,0,190,20" Clicked="back_Clicked"/>
            
         </StackLayout>

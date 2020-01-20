@@ -8,25 +8,11 @@
 
     <StackLayout Padding="5,0,0,0" Margin="50,100,50,0">
         <Label Text=""/>
-        <Entry x:Name="username" Placeholder="Username"/>
-        <Entry x:Name="password" Placeholder="Password"/>
-        <Label x:Name="messege"/>
-        <Button Text="Login" Clicked="Button_Clicked"/>
-        <Label Margin="180,0,0,0" BackgroundColor="White">
-            <Label.FormattedText>
-                <FormattedString>
-
-                    <Span Text="Zarejestruj się"
-                  TextColor="Blue"
-                  TextDecorations="Underline">
-                        <Span.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding TapCommand}"
-                                          CommandParameter="https://docs.microsoft.com/xamarin/" />
-                        </Span.GestureRecognizers>
-                    </Span>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
+        <Entry x:Name="username" Placeholder="Nazwa użytkownika"/>
+        <Entry x:Name="password" Placeholder="Hasło" IsPassword="True"/>
+        <Label x:Name="messege" TextColor="Red"/>
+        <Button Text="Zaloguj" Clicked="Button_Clicked"/>
+        <Button x:Name="Registerbtn" Text="Zarejestruj się" Clicked="Registerbtn_Clicked"/>
 
     </StackLayout>
 

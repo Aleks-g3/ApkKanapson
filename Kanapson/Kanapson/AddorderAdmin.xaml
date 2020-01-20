@@ -7,50 +7,37 @@
              x:Class="Kanapson.AddorderAdmin">
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:FieldModifier="public" x:Name="list" Margin="0"  >
+            <ListView x:Name="listProduct" Margin="0"  IsPullToRefreshEnabled="True" >
                 <ListView.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label Text="Name" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
-                        <Label Text="Description" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Count" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
-                        <Label Text="Amount" BackgroundColor="White" Grid.Column="3" Grid.Row="0"/>
+                    <Grid Padding="5">
+                        
+                        <Label Text="Nazwa" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
+                        <Label Text="ilość" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
+                        <Label Text="Stan" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
+                        <Label Text="Cena" BackgroundColor="White" Grid.Column="3" Grid.Row="0"/>
                         <Label Text="Akcja" BackgroundColor="White" Grid.Column="4" Grid.Row="0"/>
                     </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid Padding="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                            <Grid Padding="5,5,5,0">
+
 
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" LineBreakMode="TailTruncation"></Label>
-                                <Editor x:Name="counter" Grid.Row="0" Grid.Column="2" MaxLength="2"></Editor>
-                                <Label Grid.Row="0" Grid.Column="3" Text="{Binding Amount}" LineBreakMode="NoWrap"></Label>
-                                <Label Grid.Row="0" Grid.Column="4" Text="{Binding Price}" LineBreakMode="NoWrap"></Label>
-                                <Button x:Name="add" Grid.Row="0" Grid.Column="5" Text="Dodaj"></Button>
+                                <Editor x:Name="counter" Grid.Row="0" Grid.Column="1" MaxLength="2" Keyboard="Numeric"/>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Amount}" LineBreakMode="NoWrap"/>
+                                <Label Grid.Row="0" Grid.Column="3" Text="{Binding Price}" LineBreakMode="NoWrap"/>
+                                <Button x:Name="add" Grid.Row="0" Grid.Column="4" Text="Dodaj" Clicked="add_Clicked"/>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="Card" Text="Karta" Padding="0" Margin="0,0,200,-51"/>
-            <Button x:Name="Cash" Text="Gotówka" Margin="190,0,10,0" />
-            <Label Text="Stan" Margin="20,50,0,0"/>
-            <Label Text="0.00 zł" Margin="20,0,0,0"/>
+            <Button x:Name="Card" Text="Karta" Padding="0" Margin="0,0,200,-51" Clicked="Card_Clicked"/>
+            <Button x:Name="Cash" Text="Gotówka" Margin="190,0,10,0" Clicked="Cash_Clicked"/>
+            <Label Text="Do zapłaty" Margin="20,50,0,0"/>
+            <Label x:Name="Sum" Text="0.00 zł" Margin="20,0,0,0"/>
             <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,-51" Clicked="Back_Clicked"/>
             <Button x:Name="AddOrder" Text="Dodaj zamówienie" Margin="190,0,10,0" Clicked="AddOrder_Clicked"/>
         </StackLayout>

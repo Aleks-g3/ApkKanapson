@@ -10,13 +10,7 @@
             <ListView x:Name="myorders">
                 <ListView.Header>
                     <Grid Padding="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                        
                         
                         <Label Text="czas"  Grid.Column="0" Grid.Row="0"/>
                         <Label Text="Produkty"  Grid.Column="1" Grid.Row="0"/>
@@ -28,14 +22,8 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid Padding="5" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                            <Grid HeightRequest="60" Padding="5,5,5,0" >
+                                
                                 
                                 <Label Grid.Column="0" Grid.Row="0"  Text="{Binding orderTimes}" />
                                 <Label Grid.Column="1" Grid.Row="0"  Text="{Binding Product_order}" LineBreakMode="TailTruncation" />

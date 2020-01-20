@@ -17,37 +17,48 @@ namespace Kanapson
             InitializeComponent();
         }
 
-        private void addorder_Clicked(object sender, EventArgs e)
+        private async void addorder_Clicked(object sender, EventArgs e)
         {
+            await Navigation.PushModalAsync(new AddorderAdmin());
+        }
+
+        private async void listorders_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new ListOrders());
+        }
+
+        
+
+        private async void listproducts_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new ListProducts());
+        }
+
+        private async void adduser_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new RegisterAdmin());
+        }
+
+        private async void updatecredit_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new UpdateCredit());
+        }
+
+        private async void changepassword_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new ChangePassword());
+        }
+
+        
+
+        private async void Logout_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.Properties["Token"] = null;
+            await Navigation.PushModalAsync(new MainPage());
 
         }
 
-        private void listorders_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void addproduct_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listproducts_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void adduser_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void updatecredit_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void changepassword_Clicked(object sender, EventArgs e)
+        private void Exit_Clicked(object sender, EventArgs e)
         {
 
         }

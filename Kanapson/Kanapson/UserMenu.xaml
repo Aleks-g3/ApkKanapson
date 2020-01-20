@@ -10,5 +10,6 @@
         <Button x:Name="myorders" Text="Moje zamówienia" Clicked="myorders_Clicked"/>
         <Button x:Name="changePassword" Text="Zmień hasło" Clicked="changePassword_Clicked"/>
         <Button x:Name="mycredit"  Text="Stan Konta" Clicked="mycredit_Clicked"/>
+        <Button x:Name="Logout" Text="Wyloguj" Clicked="Logout_Clicked"/>
     </StackLayout>
 </ContentPage>

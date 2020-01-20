@@ -9,11 +9,12 @@
         <StackLayout Margin="50,100,50,0">
             <Button x:Name="addorder" Text="Dodaj Zamówienie" Clicked="addorder_Clicked"/>
             <Button x:Name="listorders" Text="Lista Zamówień" Clicked="listorders_Clicked"/>
-            <Button x:Name="addproduct" Text="Dodaj Produkt" Clicked="addproduct_Clicked"/>
             <Button x:Name="listproducts" Text="Magazyn" Clicked="listproducts_Clicked"/>
             <Button x:Name="adduser" Text="Dodaj Użytkownika" Clicked="adduser_Clicked"/>
             <Button x:Name="updatecredit" Text="Doładuj Konto"  Clicked="updatecredit_Clicked"/>
             <Button x:Name="changepassword" Text="Zmień hasło" Clicked="changepassword_Clicked"/>
+            <Button x:Name="Logout" Text="Wyloguj" Clicked="Logout_Clicked"/>
+            <Button x:Name="Exit" Text="Wyjdź" Clicked="Exit_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

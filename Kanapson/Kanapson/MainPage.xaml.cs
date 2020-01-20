@@ -1,10 +1,15 @@
-﻿using Kanapson.Models;
+﻿using Jose;
+using JWT.Builder;
+using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -16,35 +21,79 @@ namespace Kanapson
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
+        User user;
+       const string url = "http://192.168.1.6:4000/users/authenticate";
+        HttpClient client;
         //User user;
+
         public MainPage()
         {
             InitializeComponent();
-        }
-
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-            User user = new User();
+            username.Text = "test";
+            password.Text = "test";
             
-            if(string.IsNullOrWhiteSpace(this.FindByName<Entry>("username").Text)&& string.IsNullOrWhiteSpace(this.FindByName<Entry>("password").Text))
+        }
+        
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            
+            user = new User();
+            string obj;
+            client = new HttpClient();
+            if (string.IsNullOrWhiteSpace(username.Text) || string.IsNullOrWhiteSpace(password.Text))
             {
-                this.FindByName<Label>("messege").Text = "błedne";
+                messege.Text = "Wszystkie pola muszą być uzupełnione";
             }
             else
             {
-                user.Username = this.FindByName<Entry>("Username").Text;
-                user.Password = this.FindByName<Entry>("Password").Text;
+                user.Username = username.Text;
+                user.Password = password.Text;
 
-                var json = JsonConvert.SerializeObject(user);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
+                try
+                {
+                    var json = JsonConvert.SerializeObject(user);
+                    var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var url = "http://localhost:4000/users/authenticate";
-                HttpClient client = new HttpClient();
+                    var response = await client.PostAsync(url, data);
+                    response.EnsureSuccessStatusCode();
 
-                var response = await client.PostAsync(url, data);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        obj = JObject.Parse(response.Content.ReadAsStringAsync().Result)["tokenString"].ToString();
+                        Application.Current.Properties["Token"] = obj;
+                        
+                        var jwtHandler = new JwtSecurityTokenHandler();
+                        if (!jwtHandler.CanReadToken(obj)) throw new Exception("The token doesn't seem to be in a proper JWT format.");
+                        
+                        var token = jwtHandler.ReadJwtToken(obj);
+                        var jwtPayload = token.Claims.First(c => c.Type=="role" ).Value;
 
-                string result = response.Content.ReadAsStringAsync().Result;
+                        if (jwtPayload == "Normal")
+                            await Navigation.PushModalAsync(new UserMenu());
+                        if (jwtPayload == "Admin")
+                            await Navigation.PushModalAsync(new AdminMenu());
+                        
+                    }
+                    else
+                    {
+                        messege.Text= response.Content.ReadAsStringAsync().Result;
+                    }
+                    
+                    
+                }
+                catch(Exception ex)
+                {
+                    messege.Text = ex.Message;
+                }
+                
             }
+            
+
+            }
+
+        private async void Registerbtn_Clicked(object sender, EventArgs e)
+        {
+           await Navigation.PushModalAsync(new RegisterUser());
         }
 
         //public async void LoadData()

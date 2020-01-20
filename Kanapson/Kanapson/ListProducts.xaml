@@ -3,48 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             
              mc:Ignorable="d"
              x:Class="Kanapson.ListProducts">
     <ContentPage.Content>
-        <StackLayout>
-            <ListView x:FieldModifier="public" x:Name="list" Margin="0">
+        <StackLayout Margin="0,0,0,50">
+            <ListView x:Name="listProduct" Margin="10,0,0,0" IsPullToRefreshEnabled="True" RowHeight="60" >
+
                 <ListView.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    
+                    <Grid >
+
                         <Label Text="Nazwa" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
-                        <Label Text="Opis" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Ilość" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
-                        <Label Text="Akcja" BackgroundColor="White" Grid.Column="4" Grid.Row="0"/>
+                        <Label Text="Ilość" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
+                        <Label Text="Cena" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
+                        <Label Text="Akcja" BackgroundColor="White" Grid.Column="3" Grid.Row="0"/>
                     </Grid>
+                    
                 </ListView.Header>
+                
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid Padding="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}" LineBreakMode="TailTruncation"></Label>
-                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Amount}" LineBreakMode="NoWrap"></Label>
-                                <Editor x:Name="amount" Grid.Row="0" Grid.Column="3" MaxLength="2"></Editor>
-                                <Button x:Name="update" Grid.Row="0" Grid.Column="4" Text="aktualizuj" Clicked="update_Clicked"/>
-                            </Grid>
+                            <ViewCell.View>
+                                <Grid >
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
+                                    <Editor Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" MaxLength="2" Keyboard="Numeric"/>
+                                    <Editor x:Name="Price" Grid.Row="0" Grid.Column="2" Text="{Binding Price}" Keyboard="Numeric"/>
+                                    <Button x:Name="update" Grid.Row="0" Grid.Column="3" Text="aktualizuj" Clicked="update_Clicked"/>
+                                </Grid>
+                            </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                
             </ListView>
+            
+
+                    <Grid  x:Name="AddView" Padding="0" Margin="0,-50,0,0" >
+
+                <Editor x:Name="Name" Placeholder="Nazwa" Grid.Column="0" Grid.Row="0"/>
+                <Editor x:Name="Amount" Placeholder="Ilość" Grid.Column="1" Grid.Row="0"/>
+                <Editor x:Name="Price" Placeholder="Cena" Grid.Column="2" Grid.Row="0"/>
+                <Button x:Name="AddProduct" Text="Dodaj" Clicked="AddProduct_Clicked" Grid.Column="3" Grid.Row="0"/>
+                    </Grid>
+
+                
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
