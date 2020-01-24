@@ -10,10 +10,10 @@
             <ListView x:Name="listProduct" Margin="0"  IsPullToRefreshEnabled="True">
                 <ListView.Header>
                     <Grid Padding="5">
-                        <Label Text="Name" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
-                        <Label Text="Count" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Amount" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
-                        <Label Text="Price" BackgroundColor="White" Grid.Column="3" Grid.Row="0" />
+                        <Label Text="Nazwa" BackgroundColor="White" Grid.Column="0" Grid.Row="0" />
+                        <Label Text="Ilość" BackgroundColor="White" Grid.Column="1" Grid.Row="0"/>
+                        <Label Text="Dostępna ilość" BackgroundColor="White" Grid.Column="2" Grid.Row="0"/>
+                        <Label Text="Cena" BackgroundColor="White" Grid.Column="3" Grid.Row="0" />
                         <Label Text="Akcja" BackgroundColor="White" Grid.Column="4" Grid.Row="0"/>
                     </Grid>
                 </ListView.Header>
@@ -31,7 +31,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="Stan" Margin="20,50,0,0"/>
+            <Label Text="Suma" Margin="20,50,0,0"/>
             <Label x:Name="Sum" Text="0.00 zł" Margin="20,0,0,0"/>
             <Label Text="Moj stan konta" Margin="20,0,0,0"/>
             <Label x:Name="Credit" Text="0.00 zł" Margin="20,0,0,0"/>
