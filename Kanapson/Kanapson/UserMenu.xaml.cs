@@ -47,5 +47,10 @@ namespace Kanapson
         {
 
         }
+
+        private void Exit_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

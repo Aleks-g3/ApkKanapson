@@ -11,5 +11,6 @@
         <Button x:Name="changePassword" Text="Zmień hasło" Clicked="changePassword_Clicked"/>
         <Button x:Name="mycredit"  Text="Stan Konta" Clicked="mycredit_Clicked"/>
         <Button x:Name="Logout" Text="Wyloguj" Clicked="Logout_Clicked"/>
+        <Button x:Name="Exit" Text="Wyjdź" Clicked="Exit_Clicked"/>
     </StackLayout>
 </ContentPage>

@@ -8,7 +8,8 @@
              x:Class="Kanapson.ListProducts">
     <ContentPage.Content>
         <StackLayout Margin="0,0,0,50">
-            <ListView x:Name="listProduct" Margin="10,0,0,0" IsPullToRefreshEnabled="True" RowHeight="60" >
+            <Button x:Name="back" Margin="0,0,200,0" Text="Powrót" Clicked="back_Clicked"/>
+            <ListView x:Name="listProduct" Margin="10,0,0,0" IsPullToRefreshEnabled="True" RowHeight="100" >
 
                 <ListView.Header>
                     
@@ -30,7 +31,8 @@
                                     <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
                                     <Editor Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" MaxLength="2" Keyboard="Numeric"/>
                                     <Editor x:Name="Price" Grid.Row="0" Grid.Column="2" Text="{Binding Price}" Keyboard="Numeric"/>
-                                    <Button x:Name="update" Grid.Row="0" Grid.Column="3" Text="aktualizuj" Clicked="update_Clicked"/>
+                                    <Button x:Name="update" Grid.Row="0" Grid.Column="3" Text="Zmień" Clicked="update_Clicked" />
+                                    <Button x:Name="delete" Grid.Row="1" Grid.Column="3" Text="Usuń"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
@@ -40,7 +42,7 @@
             </ListView>
             
 
-                    <Grid  x:Name="AddView" Padding="0" Margin="0,-50,0,0" >
+                    <Grid  x:Name="AddView" Padding="0" Margin="0,-100,0,0" >
 
                 <Editor x:Name="Name" Placeholder="Nazwa" Grid.Column="0" Grid.Row="0"/>
                 <Editor x:Name="Amount" Placeholder="Ilość" Grid.Column="1" Grid.Row="0"/>

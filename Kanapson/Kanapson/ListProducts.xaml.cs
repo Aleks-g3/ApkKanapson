@@ -21,8 +21,8 @@ namespace Kanapson
         private HttpClient client;
         private List<Product> products;
 
-        string urlProduct = "http://192.168.1.4:4000/products";
-        string urladdProduct = "http://192.168.1.4:4000/products/addproduct";
+        string urlProduct = "http://192.168.1.5:4000/products";
+        string urladdProduct = "http://192.168.1.5:4000/products/addproduct";
         
         private Product product;
 
@@ -159,6 +159,11 @@ namespace Kanapson
             {
                 await DisplayAlert("Error", ex.Message, "OK");
             }
+        }
+
+        private void back_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

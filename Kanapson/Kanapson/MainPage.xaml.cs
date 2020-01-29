@@ -22,7 +22,7 @@ namespace Kanapson
     public partial class MainPage : ContentPage
     {
         User user;
-       const string url = "http://192.168.1.6:4000/users/authenticate";
+       const string url = "http://192.168.1.5:4000/users/authenticate";
         HttpClient client;
         //User user;
 

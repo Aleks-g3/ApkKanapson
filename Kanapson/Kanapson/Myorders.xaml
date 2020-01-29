@@ -6,18 +6,12 @@
              mc:Ignorable="d"
              x:Class="Kanapson.Myorders">
     <ContentPage.Content>
-        <StackLayout Margin="0" IsEnabled="False">
-            
-            <ListView x:Name="myorders" Scrolled="myorders_Scrolled">
+        <StackLayout Margin="0" >
+            <Button x:Name="back" Text="Powrót" Margin="0,0,200,0" Clicked="back_Clicked"/>
+            <ListView x:Name="myorders" MinimumHeightRequest="60">
                 <ListView.Header>
                     <Grid Padding="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                        
                         <Label Text="Id"  Grid.Column="0" Grid.Row="0" />
                         <Label Text="order time"  Grid.Column="1" Grid.Row="0"/>
                         <Label Text="Status"  Grid.Column="2" Grid.Row="0" LineBreakMode="NoWrap"/>
@@ -27,13 +21,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <Grid Padding="5" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                                
                                 <Label Grid.Column="0" Grid.Row="0"  Text="{Binding Id}" />
                                 <Label Grid.Column="1" Grid.Row="0"  Text="{Binding orderTimes}" />
                                 <Label Grid.Column="2" Grid.Row="0"  Text="{Binding Status}" />
@@ -42,7 +30,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="back" Text="Powrót" Margin="0,0,200,0" Clicked="back_Clicked"/>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

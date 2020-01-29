@@ -7,7 +7,7 @@
              x:Class="Kanapson.UpdateCredit">
     <ContentPage.Content>
         <StackLayout>
-
+            <Button x:Name="back" Text="Powrót" Margin="0,0,200,0" Clicked="back_Clicked"/>
             <Grid WidthRequest="50">
                 <Entry Placeholder="Nazwa użytkownika" Grid.Row="0" Grid.Column="0"/>
                 <Button Text="Szukaj" Grid.Row="0" Grid.Column="1" Clicked="SearchButton"/>
@@ -34,7 +34,7 @@
             </ListView>
 
 
-            <Button x:Name="back" Text="Powrót" Margin="0,0,190,20" Clicked="back_Clicked"/>
+            
            
         </StackLayout>
     </ContentPage.Content>

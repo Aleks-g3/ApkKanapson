@@ -7,6 +7,7 @@
              x:Class="Kanapson.AddorderAdmin">
     <ContentPage.Content>
         <StackLayout>
+            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,0" Clicked="Back_Clicked"/>
             <ListView x:Name="listProduct" Margin="0"  IsPullToRefreshEnabled="True" >
                 <ListView.Header>
                     <Grid Padding="5">
@@ -38,7 +39,7 @@
             <Button x:Name="Cash" Text="Gotówka" Margin="190,0,10,0" Clicked="Cash_Clicked"/>
             <Label Text="Do zapłaty" Margin="20,50,0,0"/>
             <Label x:Name="Sum" Text="0.00 zł" Margin="20,0,0,0"/>
-            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,-51" Clicked="Back_Clicked"/>
+            
             <Button x:Name="AddOrder" Text="Dodaj zamówienie" Margin="190,0,10,0" Clicked="AddOrder_Clicked"/>
         </StackLayout>
     </ContentPage.Content>

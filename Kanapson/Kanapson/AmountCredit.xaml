@@ -6,10 +6,12 @@
              mc:Ignorable="d"
              x:Class="Kanapson.AmountCredit">
     <ContentPage.Content>
-        <StackLayout Margin="50,100,50,0">
-            <Label Text="Stan Konta" VerticalOptions="Center" HorizontalOptions="Center"/>
-            <Label x:Name="Credit" Text="0.00 zł" VerticalOptions="Center" HorizontalOptions="Center"/>
-            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,400,200,0" Clicked="Back_Clicked"/>
+        <StackLayout >
+            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,0" Clicked="Back_Clicked"/>
+            <StackLayout Margin="50,100,50,0">
+                <Label Text="Stan Konta" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <Label x:Name="Credit" Text="0.00 zł" VerticalOptions="Center" HorizontalOptions="Center"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
