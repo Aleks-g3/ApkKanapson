@@ -11,7 +11,7 @@
             <StackLayout Margin="50,100,50,0">
                 <Entry x:Name="Firstname" Placeholder="Firstname" Keyboard="Text"/>
                 <Entry x:Name="Lastname" Placeholder="Lastname" Keyboard="Text"/>
-                <Button Text="Zarejestruj"/>
+                <Button x:Name="registerAdmin" Text="Zarejestruj" Clicked="registerAdmin_Clicked"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

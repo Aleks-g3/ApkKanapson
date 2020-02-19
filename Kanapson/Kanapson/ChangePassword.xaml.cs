@@ -17,7 +17,7 @@ namespace Kanapson
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChangePassword : ContentPage
     {
-        private List<User> user;
+        private User user;
         private HttpClient client;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
@@ -52,7 +52,7 @@ namespace Kanapson
             }
             else
             {
-                user[0].Password = password.Text;
+                user.Password = password.Text;
                 try
                 {
                     var json = JsonConvert.SerializeObject(user);
@@ -78,7 +78,7 @@ namespace Kanapson
 
         private async void getUser(string id)
         {
-            user = new List<User>();
+            user = new User();
             try
             {
                 var response = await client.GetAsync(urlUser + id);
@@ -88,9 +88,9 @@ namespace Kanapson
                 if (response.IsSuccessStatusCode)
                 {
                     var resault = response.Content.ReadAsStringAsync().Result;
-                    user = JsonConvert.DeserializeObject<List<User>>(resault);
+                    user = JsonConvert.DeserializeObject<User>(resault);
 
-                    username.Text = user[0].Username;
+                    username.Text = user.Username;
 
                 }
 

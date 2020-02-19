@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Kanapson.Models
@@ -7,7 +8,7 @@ namespace Kanapson.Models
     public class Order
     {
         public int Id { get; set; }
-        public virtual List<Product_Order> Product_order { get; set; }
+        public virtual ObservableCollection<Product_Order> Product_order { get; set; }
         public DateTime orderTimes { get; set; }
         public virtual User user { get; set; }
         public double Sum { get; set; }

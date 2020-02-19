@@ -13,7 +13,6 @@
                 <Entry x:Name="Password" Placeholder="Hasło" Keyboard="Default" IsPassword="True"/>
                 <Entry x:Name="Firstname" Placeholder="Imię" Keyboard="Text"/>
                 <Entry x:Name="Lastname" Placeholder="Nazwisko" Keyboard="Text"/>
-                <Label x:Name="messagelbl" TextColor="Red"/>
                 <Button x:Name="Register" Text="Zarejestruj" Margin="160,0,0,0" Clicked="Register_Clicked"/>
             </StackLayout>
         </StackLayout>

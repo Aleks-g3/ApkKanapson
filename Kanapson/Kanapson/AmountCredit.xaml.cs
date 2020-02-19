@@ -21,7 +21,7 @@ namespace Kanapson
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
         string urlUser = "http://192.168.1.4:4000/users/?id=";
-        private List<User> user;
+        private User user;
 
         public AmountCredit()
         {
@@ -34,16 +34,17 @@ namespace Kanapson
 
             var token = jwtHandler.ReadJwtToken(Xamarin.Forms.Application.Current.Properties["Token"].ToString());
             jwtPayload = token.Claims.First(c => c.Type == "unique_name").Value;
+            getCredit(jwtPayload);
         }
 
-        private void Back_Clicked(object sender, EventArgs e)
+        private async void Back_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PopModalAsync();
         }
 
         private async void getCredit(string id)
         {
-            user = new List<User>();
+            user = new User();
             try
             {
                 var response = await client.GetAsync(urlUser + id);
@@ -53,8 +54,8 @@ namespace Kanapson
                 if (response.IsSuccessStatusCode)
                 {
                     var resault = response.Content.ReadAsStringAsync().Result;
-                    user = JsonConvert.DeserializeObject<List<User>>(resault);
-                    Credit.Text = user[0].Credit + " zł";
+                    user = JsonConvert.DeserializeObject<User>(resault);
+                    Credit.Text = user.Credit + " zł";
 
 
                 }

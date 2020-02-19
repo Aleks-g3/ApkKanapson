@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -18,20 +19,21 @@ namespace Kanapson
     public partial class AddorderAdmin : ContentPage
     {
         private HttpClient client;
-        private List<Product> products;
+        private ObservableCollection<Product> products;
         string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
         string urladdOrder = "http://192.168.1.4:4000/orders/add";
-        string urlUser = "http://192.168.1.4:4000/users/?id=";
-        private List<Product_Order> product_Order;
+        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
+        private ObservableCollection<Product_Order> product_Order;
         private Order order;
         private JwtSecurityTokenHandler jwtHandler;
         double sum;
-        private List<User> user;
+        private User user;
         private string jwtPayload;
 
         public AddorderAdmin()
         {
             InitializeComponent();
+            AddOrder.IsEnabled = false;
             client = new HttpClient();
             jwtHandler = new JwtSecurityTokenHandler();
             
@@ -43,7 +45,7 @@ namespace Kanapson
             jwtPayload = token.Claims.First(c => c.Type == "unique_name").Value;
             getUser(jwtPayload);
             GetProducts();
-            product_Order = new List<Product_Order>();
+            product_Order = new ObservableCollection<Product_Order>();
             order = new Order();
             order.Sum = 0;
 
@@ -64,7 +66,8 @@ namespace Kanapson
         {
             order.Product_order = product_Order;
             order.Sum = sum;
-            order.user = user[0];
+            order.user = user;
+            //order.user.Username = user.Username;
             try
             {
                 var json = JsonConvert.SerializeObject(order);
@@ -75,6 +78,7 @@ namespace Kanapson
 
                 if (responseProduct.IsSuccessStatusCode)
                 {
+                    await DisplayAlert("Powiadomienie", " zamówienie zostało złożone", "Ok");
                     await Navigation.PopModalAsync();
 
 
@@ -91,7 +95,7 @@ namespace Kanapson
         {
             listProduct.ItemsSource = null;
             
-            products = new List<Product>();
+            products = new ObservableCollection<Product>();
 
             
             try
@@ -103,7 +107,7 @@ namespace Kanapson
                 if (responseProduct.IsSuccessStatusCode)
                 {
                     var resault = responseProduct.Content.ReadAsStringAsync().Result;
-                    products = JsonConvert.DeserializeObject<List<Product>>(resault);
+                    products = JsonConvert.DeserializeObject<ObservableCollection<Product>>(resault);
                     listProduct.ItemsSource = products;
 
 
@@ -124,40 +128,52 @@ namespace Kanapson
             Editor Count = (Editor)grid.Children[1];
             Label Amount = (Label)grid.Children[2];
             Label Price = (Label)grid.Children[3];
-
-            if (addProduct.Text == "Dodaj")
+            try
             {
-                if (string.IsNullOrWhiteSpace(Count.Text) || Convert.ToUInt16(Count.Text) <= 0 || Convert.ToUInt16(Count.Text) > Convert.ToUInt16(Amount.Text))
+                if (addProduct.Text == "Dodaj")
                 {
-                    await DisplayAlert("", "błędna wartość", "OK");
+                    if (string.IsNullOrWhiteSpace(Count.Text) || Convert.ToUInt16(Count.Text) <= 0 || Convert.ToUInt16(Count.Text) > Convert.ToUInt16(Amount.Text))
+                    {
+                        await DisplayAlert("", "błędna wartość", "OK");
+                    }
+                    else
+                    {
+                        product_Order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
+
+                        sum += product_Order.First(p => p.product.Name == name.Text).PriceEach;
+                        Sum.Text = sum + " zł";
+                        addProduct.Text = "Usuń";
+                        Count.IsEnabled = false;
+
+
+
+                    }
                 }
                 else
                 {
-                    product_Order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
-
-                    sum += product_Order.First(p => p.product.Name == name.Text).PriceEach;
+                    sum -= product_Order.First(p => p.product.Name == name.Text).PriceEach;
                     Sum.Text = sum + " zł";
-                    addProduct.Text = "Usuń";
-                    Count.IsEnabled = false;
- 
-
-
+                    product_Order.Remove(product_Order.First(p => p.product.Name == name.Text));
+                    Count.Text = "1";
+                    Count.IsEnabled = true;
+                    addProduct.Text = "Dodaj";
                 }
-            }
-            else
-            {
-                sum -= product_Order.First(p => p.product.Name == name.Text).PriceEach;
-                Sum.Text = sum + " zł";
-                product_Order.Remove(product_Order.First(p => p.product.Name == name.Text));
-                Count.Text = "1";
-                Count.IsEnabled = true;
-                addProduct.Text = "Dodaj";
-            }
 
+
+                if (product_Order.Count > 0)
+                    AddOrder.IsEnabled = true;
+                else
+                    AddOrder.IsEnabled = false;
+            }
+            catch(Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
+            
         }
         private async void getUser(string id)
         {
-            user = new List<User>();
+            user = new User();
             try
             {
                 var response = await client.GetAsync(urlUser + id);
@@ -167,7 +183,7 @@ namespace Kanapson
                 if (response.IsSuccessStatusCode)
                 {
                     var resault = response.Content.ReadAsStringAsync().Result;
-                    user = JsonConvert.DeserializeObject<List<User>>(resault);
+                    user = JsonConvert.DeserializeObject<User>(resault);
                     
 
 

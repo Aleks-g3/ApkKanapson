@@ -23,12 +23,6 @@ namespace Kanapson
             InitializeComponent();
             Firstname.Text = Lastname.Text=Username.Text=Password.Text="";
 
-            messagelbl.Text = "";
-        }
-
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-
         }
 
         private async void Back_Clicked(object sender, EventArgs e)
@@ -40,28 +34,39 @@ namespace Kanapson
         {
             user = new User();
             client = new HttpClient();
-            if (string.IsNullOrWhiteSpace(Username.Text) || string.IsNullOrWhiteSpace(Password.Text) || string.IsNullOrWhiteSpace(Firstname.Text) || string.IsNullOrWhiteSpace(Lastname.Text))
-            {
-                messagelbl.Text = "Wszystkie pola muszą być wypełnione";
-            }
-            else
-            {
-                user.Username = Username.Text;
-                user.Password = Password.Text;
-                user.Firstname = Firstname.Text;
-                user.Lastname = Lastname.Text;
-                var json = JsonConvert.SerializeObject(user);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync(url, data);
-                response.EnsureSuccessStatusCode();
-
-                if (response.IsSuccessStatusCode)
-                    await Navigation.PopModalAsync();
+            try
+            { 
+                if (string.IsNullOrWhiteSpace(Username.Text) || string.IsNullOrWhiteSpace(Password.Text) || string.IsNullOrWhiteSpace(Firstname.Text) || string.IsNullOrWhiteSpace(Lastname.Text))
+                {
+                    await DisplayAlert("","Wszystkie pola muszą być wypełnione","Ok");
+                }
                 else
-                    messagelbl.Text = response.Content.ReadAsStringAsync().Result;
+                {
+                    user.Username = Username.Text;
+                    user.Password = Password.Text;
+                    user.Firstname = Firstname.Text;
+                    user.Lastname = Lastname.Text;
+                    var json = JsonConvert.SerializeObject(user);
+                    var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync(url, data);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        await DisplayAlert("", "Użytkownik został zarejestrowany", "Ok");
+                        await Navigation.PopModalAsync();
+                    }
+                        
+                
+                }
             }
-            
+            catch(Exception ex)
+            {
+                await DisplayAlert("", ex.ToString(), "Ok");
+            }
+
+
         }
     }
 }

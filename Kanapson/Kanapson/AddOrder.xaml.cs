@@ -2,13 +2,13 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
@@ -20,25 +20,26 @@ namespace Kanapson
     public partial class AddOrder : ContentPage
     {
         private HttpClient client;
-        private List<Product> products;
+        private ObservableCollection<Product> products;
 
         string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
         string urladdOrder = "http://192.168.1.4:4000/orders/add";
         string urlUser = "http://192.168.1.4:4000/users/?id=";
-        private List<Product_Order> product_Order;
+        private ObservableCollection<Product_Order> product_Order;
         private Order order;
         double sum;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
-        private List<User> user;
+        private User user;
 
         public AddOrder()
         {
             InitializeComponent();
+            AddOrderUser.IsEnabled = false;
             sum = 0;
             listProduct.On<Android>().SetIsFastScrollEnabled(true);
             GetProducts();
-            product_Order = new List<Product_Order>();
+            product_Order = new ObservableCollection<Product_Order>();
             order = new Order();
             order.Sum = 0;
              jwtHandler = new JwtSecurityTokenHandler();
@@ -70,12 +71,12 @@ namespace Kanapson
 
         private async void AddOrderUser_Clicked(object sender, EventArgs e)
         {
-            if(user[0].Credit>sum)
+            if(user.Credit>sum)
             {
                 order.Product_order = product_Order;
                 order.Sum = sum;
-                order.user = user[0];
-                order.orderTimes = DateTime.Now;
+                order.user.Id = user.Id;
+                order.user.Username = user.Username;
                 try
                 {
                     var json = JsonConvert.SerializeObject(order);
@@ -86,9 +87,8 @@ namespace Kanapson
 
                     if (responseProduct.IsSuccessStatusCode)
                     {
+                        await DisplayAlert("Powiadomienie", "Twoje zamówienie zostało złożone", "Ok");
                         await Navigation.PopModalAsync();
-
-
                     }
 
                 }
@@ -107,8 +107,9 @@ namespace Kanapson
         private async void GetProducts()
         {
             listProduct.ItemsSource = null;
+            listProduct.IsRefreshing = true;
             client = new HttpClient();
-            products = new List<Product>();
+            products = new ObservableCollection<Product>();
 
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
@@ -121,12 +122,12 @@ namespace Kanapson
                 if (responseProduct.IsSuccessStatusCode)
                 {
                     var resault = responseProduct.Content.ReadAsStringAsync().Result;
-                    products = JsonConvert.DeserializeObject<List<Product>>(resault);
+                    products = JsonConvert.DeserializeObject<ObservableCollection<Product>>(resault);
                     listProduct.ItemsSource = products;
 
 
                 }
-
+                listProduct.IsRefreshing = false;
             }
             catch (Exception ex)
             {
@@ -136,7 +137,7 @@ namespace Kanapson
 
         private async void getCredit(string id)
         {
-            user = new List<User>();
+            user = new User();
             try
             {
                 var response = await client.GetAsync(urlUser+id);
@@ -146,8 +147,8 @@ namespace Kanapson
                 if (response.IsSuccessStatusCode)
                 {
                     var resault = response.Content.ReadAsStringAsync().Result;
-                    user = JsonConvert.DeserializeObject<List<User>>(resault);
-                    Credit.Text = user[0].Credit + " zł";
+                    user = JsonConvert.DeserializeObject<User>(resault);
+                    Credit.Text = user.Credit + " zł";
 
 
                 }
@@ -167,38 +168,47 @@ namespace Kanapson
             Editor Count = (Editor)grid.Children[1];
             Label Amount = (Label)grid.Children[2];
             Label Price = (Label)grid.Children[3];
-
-            if (addProduct.Text == "Dodaj")
+            try
             {
-                if (string.IsNullOrWhiteSpace(Count.Text) || Convert.ToUInt16(Count.Text) <= 0 || Convert.ToUInt16(Count.Text) > Convert.ToUInt16(Amount.Text))
+                if (addProduct.Text == "Dodaj")
                 {
-                    await DisplayAlert("", "błędna wartość", "OK");
+                    if (string.IsNullOrWhiteSpace(Count.Text) || Convert.ToUInt16(Count.Text) <= 0 || Convert.ToUInt16(Count.Text) > Convert.ToUInt16(Amount.Text))
+                    {
+                        await DisplayAlert("", "błędna wartość", "OK");
+                    }
+                    else
+                    {
+                        product_Order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
+
+                        sum += product_Order.First(p => p.product.Name == name.Text).PriceEach;
+                        Sum.Text = sum + " zł";
+                        addProduct.Text = "Usuń";
+                        Count.IsEnabled = false;
+                        if (user.Credit > sum)
+                            rest.Text = user.Credit - product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
+
+
+                    }
                 }
                 else
                 {
-                    product_Order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
-                    
-                    sum+= product_Order.First(p=>p.product.Name==name.Text).PriceEach;
+                    sum -= product_Order.First(p => p.product.Name == name.Text).PriceEach;
                     Sum.Text = sum + " zł";
-                    addProduct.Text = "Usuń";
-                    Count.IsEnabled = false;
-                    if (user[0].Credit > sum)
-                        rest.Text = user[0].Credit - product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
-
-
+                    rest.Text = user.Credit + product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
+                    product_Order.Remove(product_Order.First(p => p.product.Name == name.Text));
+                    Count.Text = "1";
+                    Count.IsEnabled = true;
+                    addProduct.Text = "Dodaj";
                 }
+                if (product_Order.Count > 0)
+                    AddOrderUser.IsEnabled = true;
+                else
+                    AddOrderUser.IsEnabled = false;
             }
-            else
+            catch(Exception ex)
             {
-                sum -= product_Order.First(p => p.product.Name == name.Text).PriceEach;
-                Sum.Text = sum + " zł";
-                rest.Text = user[0].Credit + product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
-                product_Order.Remove(product_Order.First(p => p.product.Name == name.Text));
-                Count.Text = "1";
-                Count.IsEnabled = true;
-                addProduct.Text = "Dodaj";
+                await DisplayAlert("Error", ex.Message, "OK");
             }
-            
             
         }
     }

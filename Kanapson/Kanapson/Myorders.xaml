@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <StackLayout Margin="0" >
             <Button x:Name="back" Text="Powrót" Margin="0,0,200,0" Clicked="back_Clicked"/>
-            <ListView x:Name="myorders" MinimumHeightRequest="60">
+            <ListView x:Name="myorders" MinimumHeightRequest="120">
                 <ListView.Header>
                     <Grid Padding="5">
                         

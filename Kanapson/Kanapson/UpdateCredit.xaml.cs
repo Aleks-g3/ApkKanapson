@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,11 +18,11 @@ namespace Kanapson
     public partial class UpdateCredit : ContentPage
     {
         private HttpClient client;
-        private List<User> users;
+        
         string urlUser = "http://192.168.1:4000/users/finduser/";
         string urlUpdateUser= "http://192.168.1.4:4000/users";
         User user;
-        
+        private ObservableCollection<User> users;
 
         public UpdateCredit()
         {
@@ -57,13 +58,14 @@ namespace Kanapson
             else
             {
 
-                user = new User()
-                {
-                    Username = username.Text,
-                    Credit = Double.Parse(credit.Text)
-                };
+                
                 try
                 {
+                    user = new User()
+                    {
+                        Username = username.Text,
+                        Credit = Double.Parse(credit.Text)
+                    };
                     var json = JsonConvert.SerializeObject(user);
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -72,14 +74,10 @@ namespace Kanapson
 
                     if (response.IsSuccessStatusCode)
                     {
+                        await DisplayAlert("", "Stan konta został zmieniony", "Ok");
                         GetUser(user.Username);
                     }
-                    else
-                    {
-                        await DisplayAlert("", response.Content.ReadAsStringAsync().Result, "OK");
-                    }
-
-
+                    
                 }
                 catch (Exception ex)
                 {
@@ -91,9 +89,10 @@ namespace Kanapson
 
         private async void GetUser(string username)
         {
+            listUser.IsRefreshing = true;
             listUser.ItemsSource = null;
             client = new HttpClient();
-            users = new List<User>();
+            users = new ObservableCollection<User>();
 
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
@@ -107,12 +106,12 @@ namespace Kanapson
                 if (response.IsSuccessStatusCode)
                 {
                     var resault = response.Content.ReadAsStringAsync().Result;
-                    users = JsonConvert.DeserializeObject<List<User>>(resault);
+                    users = JsonConvert.DeserializeObject<ObservableCollection<User>>(resault);
                     listUser.ItemsSource = users;
 
 
                 }
-
+                listUser.IsRefreshing = false;
             }
             catch (Exception ex)
             {

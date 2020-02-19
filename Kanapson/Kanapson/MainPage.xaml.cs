@@ -22,15 +22,15 @@ namespace Kanapson
     public partial class MainPage : ContentPage
     {
         User user;
-       const string url = "http://192.168.1.5:4000/users/authenticate";
+       const string url = "http://192.168.1.4:4000/users/authenticate";
         HttpClient client;
         //User user;
 
         public MainPage()
         {
             InitializeComponent();
-            username.Text = "test";
-            password.Text = "test";
+            username.Text = "";
+            password.Text = "";
             
         }
         
@@ -42,7 +42,7 @@ namespace Kanapson
             client = new HttpClient();
             if (string.IsNullOrWhiteSpace(username.Text) || string.IsNullOrWhiteSpace(password.Text))
             {
-                messege.Text = "Wszystkie pola muszą być uzupełnione";
+                await DisplayAlert("","Wszystkie pola muszą być uzupełnione","Ok");
             }
             else
             {
@@ -76,14 +76,14 @@ namespace Kanapson
                     }
                     else
                     {
-                        messege.Text= response.Content.ReadAsStringAsync().Result;
+                        await DisplayAlert("Error",response.Content.ReadAsStringAsync().Result,"Ok");
                     }
                     
                     
                 }
                 catch(Exception ex)
                 {
-                    messege.Text = ex.Message;
+                    await DisplayAlert("Error", ex.Message,"Ok");
                 }
                 
             }

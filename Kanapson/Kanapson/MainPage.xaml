@@ -10,7 +10,7 @@
         <Label Text=""/>
         <Entry x:Name="username" Placeholder="Nazwa użytkownika"/>
         <Entry x:Name="password" Placeholder="Hasło" IsPassword="True"/>
-        <Label x:Name="messege" TextColor="Red"/>
+        
         <Button Text="Zaloguj" Clicked="Button_Clicked"/>
         <Button x:Name="Registerbtn" Text="Zarejestruj się" Clicked="Registerbtn_Clicked"/>
 

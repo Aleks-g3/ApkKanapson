@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,10 +20,10 @@ namespace Kanapson
     public partial class ListProducts : ContentPage
     {
         private HttpClient client;
-        private List<Product> products;
+        private ObservableCollection<Product> products;
 
-        string urlProduct = "http://192.168.1.5:4000/products";
-        string urladdProduct = "http://192.168.1.5:4000/products/addproduct";
+        string urlProduct = "http://192.168.1.4:4000/products";
+        string urladdProduct = "http://192.168.1.4:4000/products/addproduct";
         
         private Product product;
 
@@ -135,7 +136,7 @@ namespace Kanapson
         {
             listProduct.ItemsSource = null;
             client = new HttpClient();
-            products = new List<Product>();
+            products = new ObservableCollection<Product>();
             
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
@@ -148,7 +149,7 @@ namespace Kanapson
                 if (responseProduct.IsSuccessStatusCode)
                 {
                     var resault= responseProduct.Content.ReadAsStringAsync().Result;
-                    products=JsonConvert.DeserializeObject<List<Product>>(resault);
+                    products=JsonConvert.DeserializeObject<ObservableCollection<Product>>(resault);
                     listProduct.ItemsSource = products;
                     
                     
@@ -161,9 +162,9 @@ namespace Kanapson
             }
         }
 
-        private void back_Clicked(object sender, EventArgs e)
+        private async void back_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PopModalAsync();
         }
     }
 }

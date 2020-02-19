@@ -54,13 +54,21 @@ namespace Kanapson
         private async void Logout_Clicked(object sender, EventArgs e)
         {
             Application.Current.Properties["Token"] = null;
-            await Navigation.PushModalAsync(new MainPage());
+            await Navigation.PopModalAsync();
 
         }
 
-        private void Exit_Clicked(object sender, EventArgs e)
+        private async void Exit_Clicked(object sender, EventArgs e)
         {
-
+            try
+            {
+                Xamarin.Forms.Application.Current.Properties.Clear();
+                Application.Current.Quit();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.ToString(), "Ok");
+            }
         }
     }
 }

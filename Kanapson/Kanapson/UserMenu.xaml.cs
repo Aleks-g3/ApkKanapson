@@ -23,19 +23,19 @@ namespace Kanapson
 
         
 
-        private void mycredit_Clicked(object sender, EventArgs e)
+        private async void mycredit_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PushModalAsync(new AmountCredit());
         }
 
-        private void changePassword_Clicked(object sender, EventArgs e)
+        private async void changePassword_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PushModalAsync(new ChangePassword());
         }
 
-        private void myorders_Clicked(object sender, EventArgs e)
+        private async void myorders_Clicked(object sender, EventArgs e)
         {
-
+            await Navigation.PushModalAsync(new Myorders());
         }
 
         private async void addorder_Clicked(object sender, EventArgs e)
@@ -43,14 +43,30 @@ namespace Kanapson
             await Navigation.PushModalAsync(new AddOrder());
         }
 
-        private void Logout_Clicked(object sender, EventArgs e)
+        private async void Logout_Clicked(object sender, EventArgs e)
         {
-
+            try
+            {
+                Xamarin.Forms.Application.Current.Properties.Clear();
+                await Navigation.PopModalAsync();
+            }
+            catch(Exception ex)
+            {
+                await DisplayAlert("Error", ex.ToString(), "Ok");
+            }
         }
 
-        private void Exit_Clicked(object sender, EventArgs e)
+        private async void Exit_Clicked(object sender, EventArgs e)
         {
-
+            try
+            {
+                Xamarin.Forms.Application.Current.Properties.Clear();
+                Application.Current.Quit();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.ToString(), "Ok");
+            }
         }
     }
 }
