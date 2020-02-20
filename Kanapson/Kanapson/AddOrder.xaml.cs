@@ -25,7 +25,7 @@ namespace Kanapson
         string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
         string urladdOrder = "http://192.168.1.4:4000/orders/add";
         string urlUser = "http://192.168.1.4:4000/users/?id=";
-        private ObservableCollection<Product_Order> product_Order;
+        private Product_Order product_Order;
         private Order order;
         double sum;
         private JwtSecurityTokenHandler jwtHandler;
@@ -39,7 +39,7 @@ namespace Kanapson
             sum = 0;
             listProduct.On<Android>().SetIsFastScrollEnabled(true);
             GetProducts();
-            product_Order = new ObservableCollection<Product_Order>();
+            
             order = new Order();
             order.Sum = 0;
              jwtHandler = new JwtSecurityTokenHandler();
@@ -73,7 +73,7 @@ namespace Kanapson
         {
             if(user.Credit>sum)
             {
-                order.Product_order = product_Order;
+                
                 order.Sum = sum;
                 order.user.Id = user.Id;
                 order.user.Username = user.Username;
@@ -178,29 +178,30 @@ namespace Kanapson
                     }
                     else
                     {
-                        product_Order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
+                        
+                        product_Order=new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) };
 
-                        sum += product_Order.First(p => p.product.Name == name.Text).PriceEach;
+                        sum += product_Order.PriceEach;
                         Sum.Text = sum + " zł";
                         addProduct.Text = "Usuń";
                         Count.IsEnabled = false;
                         if (user.Credit > sum)
-                            rest.Text = user.Credit - product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
+                            rest.Text = user.Credit - product_Order.PriceEach + " zł";
 
 
                     }
                 }
                 else
                 {
-                    sum -= product_Order.First(p => p.product.Name == name.Text).PriceEach;
+                    sum -= order.Product_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
                     Sum.Text = sum + " zł";
-                    rest.Text = user.Credit + product_Order.First(p => p.product.Name == name.Text).PriceEach + " zł";
-                    product_Order.Remove(product_Order.First(p => p.product.Name == name.Text));
+                    rest.Text = user.Credit + order.Product_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach + " zł";
+                    order.Product_order.Remove(order.Product_order.FirstOrDefault(p => p.product.Name == name.Text));
                     Count.Text = "1";
                     Count.IsEnabled = true;
                     addProduct.Text = "Dodaj";
                 }
-                if (product_Order.Count > 0)
+                if (order.Product_order.Count > 0)
                     AddOrderUser.IsEnabled = true;
                 else
                     AddOrderUser.IsEnabled = false;
