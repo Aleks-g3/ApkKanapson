@@ -1,14 +1,16 @@
 ﻿using Kanapson.Models;
+using Kanapson.Values;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -28,6 +30,11 @@ namespace Kanapson
         {
             InitializeComponent();
             getOrders();
+            listOrders.RefreshCommand = new Command(() =>
+            {
+                getOrders();
+                listOrders.IsRefreshing = false;
+            });
 
         }
 
@@ -41,31 +48,24 @@ namespace Kanapson
             try
             {
                 order = new Order();
-                order = orders.First(o => o.orderTimes == DateTime.Parse(orderTimes.Text));
+                order = orders.FirstOrDefault(o => o.orderTimes.ToString() == orderTimes.Text);
                 if (order != null)
                 {
-                    if (updatebtn.Text == StatusValue.ready_to_receive)
-                    {
-                        order.Status = StatusValue.ready_to_receive;
-                        updatebtn.Text = StatusValue.received;
+                    
                         var json = JsonConvert.SerializeObject(order);
                         var data = new StringContent(json, Encoding.UTF8, "application/json");
-                        var responseProduct = await client.PostAsync(urlupdateOrder, data);
-                    }
-                    if(updatebtn.Text == StatusValue.received)
+                        var response = await client.PutAsync(urlupdateOrder, data);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        order.Status = StatusValue.received;
-                        var json = JsonConvert.SerializeObject(order);
-                        var data = new StringContent(json, Encoding.UTF8, "application/json");
-                        var responseProduct = await client.PostAsync(urlupdateOrder, data);
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
-                        
+                    getOrders();
                 }
                 
             }
             catch(Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
 
@@ -76,33 +76,77 @@ namespace Kanapson
 
         private async void getOrders()
         {
+            listOrders.IsRefreshing = true;
             listOrders.ItemsSource = null;
             client = new HttpClient();
             orders = new ObservableCollection<Order>();
-
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             try
-                {
+            {
                     var responseOrders = await client.GetAsync(urlOrder);
 
                     responseOrders.EnsureSuccessStatusCode();
 
                     if (responseOrders.IsSuccessStatusCode)
                     {
-                        var resault = responseOrders.Content.ReadAsStringAsync().Result;
-                        orders = JsonConvert.DeserializeObject<ObservableCollection<Order>>(resault);
-                        listOrders.ItemsSource = orders;
+                            var resault = responseOrders.Content.ReadAsStringAsync().Result;
+                            orders = JsonConvert.DeserializeObject<ObservableCollection<Order>>(resault);
+                            listOrders.ItemsSource = orders;
+                        IEnumerable<PropertyInfo> pInfos = (listOrders as ItemsView<Cell>).GetType().GetRuntimeProperties();
+                        var templatedItems = pInfos.FirstOrDefault(info => info.Name == "TemplatedItems");
+                        if (templatedItems != null)
+                        {
+                            var cells = templatedItems.GetValue(listOrders);
 
+
+                            foreach (ViewCell cell in cells as Xamarin.Forms.ITemplatedItemsList<Xamarin.Forms.Cell>)
+                            {
+                                if (cell.BindingContext != null)
+                                {
+                                    Grid grid = (Grid)cell.FindByName<Grid>("grid");
+                                    Label orderTimes = (Label)grid.Children[0];
+                                    Button actionBtn = (Button)grid.Children[4];
+                                    if (orders.FirstOrDefault(o => o.orderTimes.ToString() == orderTimes.Text).Status == Status.Preparing)
+                                        actionBtn.Text = Status.ready_to_receive;
+                                    else
+                                        actionBtn.Text = Status.received;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await DisplayAlert("Błąd", JObject.Parse(responseOrders.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                        }
 
                     }
-
-                }
-                catch (Exception ex)
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    await DisplayAlert("Error", ex.Message, "OK");
-                }
+                    listOrders.IsRefreshing = false;
+                });
+
+            }
+            catch (Exception ex)
+            {
+                 await DisplayAlert("Błąd", ex.Message, "Ok");
+            }
             
+        }
+
+        private void showProducts_Clicked(object sender, EventArgs e)
+        {
+            Button showProductsBtn = (Button)sender;
+            Grid grid = (Grid)showProductsBtn.Parent;
+            Label orderTimes = (Label)grid.Children[0];
+            var Products_order = orders.FirstOrDefault(p => p.orderTimes.ToString() == orderTimes.Text).Products_order.ToList();
+            listProducts.ItemsSource = Products_order;
+            popupProducts.IsVisible = true;
+        }
+
+        private void Close_Clicked(object sender, EventArgs e)
+        {
+            popupProducts.IsVisible = false;
         }
     }
 }

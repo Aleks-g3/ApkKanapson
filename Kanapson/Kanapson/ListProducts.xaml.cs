@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,8 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+
 using Xamarin.Forms.Xaml;
 
 namespace Kanapson
@@ -30,7 +30,6 @@ namespace Kanapson
         public ListProducts()
         {
             InitializeComponent();
-            listProduct.On<Android>().SetIsFastScrollEnabled(true);
             GetProducts();
             listProduct.RefreshCommand = new Command(() =>
             {
@@ -42,7 +41,7 @@ namespace Kanapson
 
         private async void update_Clicked(object sender, EventArgs e)
         {
-            Xamarin.Forms.Button updatebtn = (Xamarin.Forms.Button)sender;
+            Button updatebtn = (Button)sender;
             Grid grid = (Grid)updatebtn.Parent;
             Label Name = (Label)grid.Children[0];
             Editor Amount = (Editor)grid.Children[1];
@@ -65,7 +64,6 @@ namespace Kanapson
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PutAsync(urladdProduct, data);
-                    response.EnsureSuccessStatusCode();
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -74,7 +72,7 @@ namespace Kanapson
                     }
                     else
                     {
-                        await DisplayAlert("", response.Content.ReadAsStringAsync().Result, "OK");
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
 
 
@@ -90,9 +88,9 @@ namespace Kanapson
         private async void AddProduct_Clicked(object sender, EventArgs e)
         {
             
-            Editor Name = (Editor)AddView.Children[0];
-            Editor Amount= (Editor)AddView.Children[1];
-            Editor Price= (Editor)AddView.Children[2];
+            Entry Name = (Entry)AddView.Children[0];
+            Entry Amount= (Entry)AddView.Children[1];
+            Entry Price= (Entry)AddView.Children[2];
             if (string.IsNullOrWhiteSpace(Name.Text) || string.IsNullOrWhiteSpace(Amount.Text) || string.IsNullOrWhiteSpace(Price.Text))
                 await DisplayAlert("", "Wszystkie pola muszą być uzupełnione","OK");
             else
@@ -110,41 +108,42 @@ namespace Kanapson
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PostAsync(urladdProduct, data);
-                    response.EnsureSuccessStatusCode();
+                    
 
                     if (response.IsSuccessStatusCode)
                     {
                         Name.Text = Amount.Text = Price.Text = "";
+                        await DisplayAlert("Powiadomienie", "Produkt został dodany pomyślnie", "Ok");
                         GetProducts();
-                        listProduct.IsRefreshing = false;
                     }
                     else
                     {
-                        await DisplayAlert("",response.Content.ReadAsStringAsync().Result,"OK");
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
 
 
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("", ex.Message, "OK");
+                    await DisplayAlert("Błąd", ex.Message, "OK");
                 }
             }
         }
 
         private async void GetProducts()
         {
+            listProduct.IsRefreshing = false;
             listProduct.ItemsSource = null;
             client = new HttpClient();
             products = new ObservableCollection<Product>();
-            
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             try
             {
                 var responseProduct = await client.GetAsync(urlProduct);
 
-                responseProduct.EnsureSuccessStatusCode();
+               
 
                 if (responseProduct.IsSuccessStatusCode)
                 {
@@ -154,17 +153,53 @@ namespace Kanapson
                     
                     
                 }
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(responseProduct.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                }
 
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                listProduct.IsRefreshing = false;
+            });
         }
 
         private async void back_Clicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
+        }
+
+        private async void delete_Clicked(object sender, EventArgs e)
+        {
+            Button deleteBtn = (Button)sender;
+            Grid grid = (Grid)deleteBtn.Parent;
+            Label Name = (Label)grid.Children[0];
+
+            product = products.FirstOrDefault(p => p.Name == Name.Text);
+            if (product != null)
+            {
+                try
+                {
+                    var response = await client.DeleteAsync(urlProduct + "/" + product.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        GetProducts();
+                    }
+                    else
+                    {
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    await DisplayAlert("Błąd", ex.Message, "Ok");
+                }
+            }
         }
     }
 }

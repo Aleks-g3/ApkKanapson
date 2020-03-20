@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +24,6 @@ namespace Kanapson
         string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
         string urladdOrder = "http://192.168.1.4:4000/orders/add";
         string urlUser = "http://192.168.1.4:4000/users/findbyid/";
-        Product_Order product_Order;
         private Order order;
         private JwtSecurityTokenHandler jwtHandler;
         double sum;
@@ -34,9 +34,12 @@ namespace Kanapson
         {
             InitializeComponent();
             AddOrder.IsEnabled = false;
+            Card.IsEnabled = false;
+            Cash.IsEnabled = false;
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
             jwtHandler = new JwtSecurityTokenHandler();
-            
+            AddOrder.IsEnabled = false;
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             if (!jwtHandler.CanReadToken(Xamarin.Forms.Application.Current.Properties["Token"].ToString())) throw new Exception("The token doesn't seem to be in a proper JWT format.");
@@ -65,8 +68,7 @@ namespace Kanapson
         private async void AddOrder_Clicked(object sender, EventArgs e)
         {
             
-            order.Sum = sum;
-            order.user = user;
+            order.User = user;
             //order.user.Username = user.Username;
             try
             {
@@ -87,7 +89,7 @@ namespace Kanapson
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
 
@@ -102,7 +104,7 @@ namespace Kanapson
             {
                 var responseProduct = await client.GetAsync(urlProduct);
 
-                responseProduct.EnsureSuccessStatusCode();
+                
 
                 if (responseProduct.IsSuccessStatusCode)
                 {
@@ -111,6 +113,10 @@ namespace Kanapson
                     listProduct.ItemsSource = products;
 
 
+                }
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(responseProduct.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                 }
 
             }
@@ -125,7 +131,7 @@ namespace Kanapson
             Xamarin.Forms.Button addProduct = (Xamarin.Forms.Button)sender;
             Grid grid = (Grid)addProduct.Parent;
             Label name = (Label)grid.Children[0];
-            Editor Count = (Editor)grid.Children[1];
+            Entry Count = (Entry)grid.Children[1];
             Label Amount = (Label)grid.Children[2];
             Label Price = (Label)grid.Children[3];
             try
@@ -138,13 +144,19 @@ namespace Kanapson
                     }
                     else
                     {
-                        product_Order = new Product_Order();
-                        product_Order.count = Convert.ToUInt16(Count.Text);
-                        product_Order.product = new Product() { Name = name.Text };
-                        product_Order.PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text);
-
-                        order.Product_order.Add(product_Order);
-                        sum += product_Order.PriceEach;
+                        if (order.Products_order == null)
+                            order.Products_order = new List<Product_Order>();
+                        order.Products_order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text),product=new Product() { Name = name.Text },PriceEach=Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
+                        if (order.Products_order.Count == 1)
+                        {
+                            Cash.IsEnabled = true;
+                            Card.IsEnabled = true;
+                        }
+                        
+                        sum += order.Products_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
+                        
+                            
+                        
                         Sum.Text = sum + " zł";
                         addProduct.Text = "Usuń";
                         Count.IsEnabled = false;
@@ -155,23 +167,26 @@ namespace Kanapson
                 }
                 else
                 {
-                    sum -= order.Product_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
+                    sum -= order.Products_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
                     Sum.Text = sum + " zł";
-                    order.Product_order.Remove(order.Product_order.FirstOrDefault(o=>o.product.Name==name.Text));
-                    Count.Text = "1";
+                    order.Products_order.Remove(order.Products_order.FirstOrDefault(o=>o.product.Name==name.Text));
+                    if (order.Products_order.Count == 0)
+                    {
+                        order.Payment = null;
+                        Cash.IsEnabled = false;
+                        Card.IsEnabled = false;
+                        AddOrder.IsEnabled = false;
+                    }
                     Count.IsEnabled = true;
                     addProduct.Text = "Dodaj";
                 }
 
+                
 
-                if (order.Product_order.Count > 0)
-                    AddOrder.IsEnabled = true;
-                else
-                    AddOrder.IsEnabled = false;
             }
             catch(Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
             
         }
@@ -182,7 +197,7 @@ namespace Kanapson
             {
                 var response = await client.GetAsync(urlUser + id);
 
-                response.EnsureSuccessStatusCode();
+                
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -196,22 +211,24 @@ namespace Kanapson
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
 
         private void Card_Clicked(object sender, EventArgs e)
         {
-            order.Payment = Card.ToString();
+            order.Payment = Card.Text;
             Card.IsEnabled = false;
             Cash.IsEnabled = true;
+            AddOrder.IsEnabled = true;
         }
 
         private void Cash_Clicked(object sender, EventArgs e)
         {
-            order.Payment = Cash.ToString();
+            order.Payment = Cash.Text;
             Card.IsEnabled = true;
             Cash.IsEnabled = false;
+            AddOrder.IsEnabled = true;
         }
     }
 }

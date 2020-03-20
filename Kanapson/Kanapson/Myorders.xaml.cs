@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,14 +19,20 @@ namespace Kanapson
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Myorders : ContentPage
     {
-        string urlOrder = "http://192.168.1.5:4000/orders/?id=";
+        string urlOrder = "http://192.168.1.4:4000/orders/findid/";
         private HttpClient client;
         private ObservableCollection<Order> myOders;
+        private string jwtPayload;
 
         public Myorders()
         {
             InitializeComponent();
             GetMyOrders();
+            myorders.RefreshCommand = new Command(() =>
+            {
+                GetMyOrders();
+                myorders.IsRefreshing = false;
+            });
         }
 
 
@@ -36,10 +43,11 @@ namespace Kanapson
 
         private async void GetMyOrders()
         {
+            myorders.IsRefreshing = true;
             myorders.ItemsSource = null;
             client = new HttpClient();
             myOders = new ObservableCollection<Order>();
-
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             try
@@ -48,7 +56,7 @@ namespace Kanapson
                 if (!jwtHandler.CanReadToken(Application.Current.Properties["Token"] as string)) throw new Exception("The token doesn't seem to be in a proper JWT format.");
 
                 var token = jwtHandler.ReadJwtToken(Application.Current.Properties["Token"] as string);
-                var jwtPayload = token.Claims.First(c => c.Type == "unique_name").Value;
+                 jwtPayload = token.Claims.First(c => c.Type == "unique_name").Value;
                 var response = await client.GetAsync(urlOrder+jwtPayload);
                 
                 response.EnsureSuccessStatusCode();
@@ -61,12 +69,20 @@ namespace Kanapson
 
 
                 }
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                }
 
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", ex.Message, "OK");
             }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                myorders.IsRefreshing = false;
+            });
         }
     }
 }

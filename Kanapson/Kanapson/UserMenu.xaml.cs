@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -52,21 +53,27 @@ namespace Kanapson
             }
             catch(Exception ex)
             {
-                await DisplayAlert("Error", ex.ToString(), "Ok");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
 
-        private async void Exit_Clicked(object sender, EventArgs e)
+        private  void Exit_Clicked(object sender, EventArgs e)
         {
-            try
+
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                Xamarin.Forms.Application.Current.Properties.Clear();
-                Application.Current.Quit();
-            }
-            catch (Exception ex)
+                if (await DisplayAlert("", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                    Thread.CurrentThread.Abort();
+            });
+        }
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Error", ex.ToString(), "Ok");
-            }
+                if (await DisplayAlert("", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                    Thread.CurrentThread.Abort();
+            });
+            return true;
         }
     }
 }

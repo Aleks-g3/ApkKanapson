@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,13 +21,14 @@ namespace Kanapson
         private HttpClient client;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
-        string urlUser = "http://192.168.1.4:4000/users/?id=";
+        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
         private User user;
 
         public AmountCredit()
         {
             InitializeComponent();
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
             jwtHandler = new JwtSecurityTokenHandler();
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
@@ -59,11 +61,15 @@ namespace Kanapson
 
 
                 }
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                }
 
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
     }

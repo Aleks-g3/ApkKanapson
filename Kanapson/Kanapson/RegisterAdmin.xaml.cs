@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Kanapson
         private async void registerAdmin_Clicked(object sender, EventArgs e)
         {
             client = new HttpClient();
-
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             
@@ -47,25 +48,30 @@ namespace Kanapson
                 }
                 else
                 {
-                    user.Firstname = Firstname.Text;
-                    user.Lastname = Lastname.Text;
+                    user.FirstName = Firstname.Text;
+                    user.LastName = Lastname.Text;
                     var json = JsonConvert.SerializeObject(user);
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PostAsync(url, data);
-                    response.EnsureSuccessStatusCode();
+                   
 
                     if (response.IsSuccessStatusCode)
                     {
                         await DisplayAlert("", "Użytkownik został zarejestrowany", "Ok");
                         await Navigation.PopModalAsync();
                     }
+                    else
+                    {
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                    }
+                    
                 }
 
             }
             catch(Exception ex)
             {
-                await DisplayAlert("Error", ex.ToString(), "Ok");
+                await DisplayAlert("Błąd", ex.ToString(), "Ok");
             }
             
         }

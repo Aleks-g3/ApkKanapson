@@ -6,9 +6,12 @@ namespace Kanapson.Models
 {
     public class Product_Order
     {
-         public int Id { get; set; }
-        public Product product { get; set; }
+        public int Id { get; set; }
+
+        public virtual Product product { get; set; }
+
         public ushort count { get; set; }
+
         public double PriceEach { get; set; }
     }
 }

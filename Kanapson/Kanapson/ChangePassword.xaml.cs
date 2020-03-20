@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,15 +22,15 @@ namespace Kanapson
         private HttpClient client;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
-        string urlUser = "http://192.168.1.4:4000/users/?id=";
-        string urlupdateUser = "http://192.168.1.4:4000/users";
+        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
+        string urlupdateUser = "http://192.168.1.4:4000/users/updatepass";
 
         public ChangePassword()
         {
             InitializeComponent();
             client = new HttpClient();
             jwtHandler = new JwtSecurityTokenHandler();
-
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             if (!jwtHandler.CanReadToken(Xamarin.Forms.Application.Current.Properties["Token"].ToString())) throw new Exception("The token doesn't seem to be in a proper JWT format.");
@@ -48,7 +49,7 @@ namespace Kanapson
         {
             if (string.IsNullOrWhiteSpace(password.Text))
             {
-                await DisplayAlert("", "Hasło nie zostało zmienione", "OK");
+                await DisplayAlert("Powiadomienie", "Wprowadź hasło", "OK");
             }
             else
             {
@@ -57,21 +58,24 @@ namespace Kanapson
                 {
                     var json = JsonConvert.SerializeObject(user);
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
-                    var responseProduct = await client.PostAsync(urlupdateUser, data);
+                    var response = await client.PutAsync(urlupdateUser, data);
 
-                    responseProduct.EnsureSuccessStatusCode();
+                    
 
-                    if (responseProduct.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
+                        await DisplayAlert("Powiadomienie", "Hasło zostało zmienione", "Ok");
                         await Navigation.PopModalAsync();
-
-
+                    }
+                    else
+                    {
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("Error", ex.Message, "OK");
+                    await DisplayAlert("Błąd", ex.Message, "Ok");
                 }
             }
         }
@@ -97,7 +101,7 @@ namespace Kanapson
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
         }
     }

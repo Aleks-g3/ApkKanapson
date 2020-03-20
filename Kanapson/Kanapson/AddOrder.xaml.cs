@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,8 +11,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace Kanapson
@@ -24,8 +23,7 @@ namespace Kanapson
 
         string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
         string urladdOrder = "http://192.168.1.4:4000/orders/add";
-        string urlUser = "http://192.168.1.4:4000/users/?id=";
-        private Product_Order product_Order;
+        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
         private Order order;
         double sum;
         private JwtSecurityTokenHandler jwtHandler;
@@ -37,7 +35,6 @@ namespace Kanapson
             InitializeComponent();
             AddOrderUser.IsEnabled = false;
             sum = 0;
-            listProduct.On<Android>().SetIsFastScrollEnabled(true);
             GetProducts();
             
             order = new Order();
@@ -71,12 +68,10 @@ namespace Kanapson
 
         private async void AddOrderUser_Clicked(object sender, EventArgs e)
         {
-            if(user.Credit>sum)
+            if(user.Credit>=sum)
             {
                 
-                order.Sum = sum;
-                order.user.Id = user.Id;
-                order.user.Username = user.Username;
+                order.User = user;
                 try
                 {
                     var json = JsonConvert.SerializeObject(order);
@@ -110,14 +105,14 @@ namespace Kanapson
             listProduct.IsRefreshing = true;
             client = new HttpClient();
             products = new ObservableCollection<Product>();
-
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Authorization =
              new AuthenticationHeaderValue("Bearer", Xamarin.Forms.Application.Current.Properties["Token"] as string);
             try
             {
                 var responseProduct = await client.GetAsync(urlProduct);
 
-                responseProduct.EnsureSuccessStatusCode();
+                
 
                 if (responseProduct.IsSuccessStatusCode)
                 {
@@ -127,12 +122,20 @@ namespace Kanapson
 
 
                 }
-                listProduct.IsRefreshing = false;
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(responseProduct.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
+                }
+                
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", ex.Message, "OK");
             }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                listProduct.IsRefreshing = false;
+            });
         }
 
         private async void getCredit(string id)
@@ -142,7 +145,7 @@ namespace Kanapson
             {
                 var response = await client.GetAsync(urlUser+id);
 
-                response.EnsureSuccessStatusCode();
+                
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -151,6 +154,10 @@ namespace Kanapson
                     Credit.Text = user.Credit + " zł";
 
 
+                }
+                else
+                {
+                    await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                 }
 
             }
@@ -165,7 +172,7 @@ namespace Kanapson
             Xamarin.Forms.Button addProduct = (Xamarin.Forms.Button)sender;
             Grid grid = (Grid)addProduct.Parent;
             Label name = (Label)grid.Children[0];
-            Editor Count = (Editor)grid.Children[1];
+            Entry Count = (Entry)grid.Children[1];
             Label Amount = (Label)grid.Children[2];
             Label Price = (Label)grid.Children[3];
             try
@@ -178,33 +185,44 @@ namespace Kanapson
                     }
                     else
                     {
-                        
-                        product_Order=new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) };
+                        if (order.Products_order == null)
+                            order.Products_order = new List<Product_Order>();
+                        if(sum+(Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text)) <= user.Credit)
+                        {
+                            order.Products_order.Add(new Product_Order() { count = Convert.ToUInt16(Count.Text), product = new Product() { Name = name.Text }, PriceEach = Double.Parse(Price.Text) * Convert.ToUInt16(Count.Text) });
 
-                        sum += product_Order.PriceEach;
-                        Sum.Text = sum + " zł";
-                        addProduct.Text = "Usuń";
-                        Count.IsEnabled = false;
-                        if (user.Credit > sum)
-                            rest.Text = user.Credit - product_Order.PriceEach + " zł";
+                            sum += order.Products_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
+                            Sum.Text = sum + " zł";
+                            addProduct.Text = "Usuń";
+                            Count.IsEnabled = false;
+                                rest.Text = user.Credit - sum + " zł";
+                        }
+                        else
+                        {
+                            await DisplayAlert("Błąd", "Nie posiadasz wystarczającej ilości środków", "Ok");
+                        }
 
 
                     }
                 }
                 else
                 {
-                    sum -= order.Product_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
+                    sum -= order.Products_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach;
                     Sum.Text = sum + " zł";
-                    rest.Text = user.Credit + order.Product_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach + " zł";
-                    order.Product_order.Remove(order.Product_order.FirstOrDefault(p => p.product.Name == name.Text));
+                    rest.Text = user.Credit + order.Products_order.FirstOrDefault(p => p.product.Name == name.Text).PriceEach + " zł";
+                    order.Products_order.Remove(order.Products_order.FirstOrDefault(p => p.product.Name == name.Text));
                     Count.Text = "1";
                     Count.IsEnabled = true;
                     addProduct.Text = "Dodaj";
                 }
-                if (order.Product_order.Count > 0)
-                    AddOrderUser.IsEnabled = true;
-                else
-                    AddOrderUser.IsEnabled = false;
+                if (order.Products_order != null)
+                {
+                    if (order.Products_order.Count > 0)
+                        AddOrderUser.IsEnabled = true;
+                    else
+                        AddOrderUser.IsEnabled = false;
+                }
+                
             }
             catch(Exception ex)
             {

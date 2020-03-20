@@ -1,5 +1,6 @@
 ﻿using Kanapson.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Kanapson
         {
             user = new User();
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
             try
             { 
                 if (string.IsNullOrWhiteSpace(Username.Text) || string.IsNullOrWhiteSpace(Password.Text) || string.IsNullOrWhiteSpace(Firstname.Text) || string.IsNullOrWhiteSpace(Lastname.Text))
@@ -44,18 +46,22 @@ namespace Kanapson
                 {
                     user.Username = Username.Text;
                     user.Password = Password.Text;
-                    user.Firstname = Firstname.Text;
-                    user.Lastname = Lastname.Text;
+                    user.FirstName = Firstname.Text;
+                    user.LastName = Lastname.Text;
                     var json = JsonConvert.SerializeObject(user);
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PostAsync(url, data);
-                    response.EnsureSuccessStatusCode();
+                    
 
                     if (response.IsSuccessStatusCode)
                     {
                         await DisplayAlert("", "Użytkownik został zarejestrowany", "Ok");
                         await Navigation.PopModalAsync();
+                    }
+                    else
+                    {
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
                         
                 
@@ -63,7 +69,7 @@ namespace Kanapson
             }
             catch(Exception ex)
             {
-                await DisplayAlert("", ex.ToString(), "Ok");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
 
 

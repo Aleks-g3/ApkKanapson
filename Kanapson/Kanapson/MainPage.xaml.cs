@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -40,6 +41,7 @@ namespace Kanapson
             user = new User();
             string obj;
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
             if (string.IsNullOrWhiteSpace(username.Text) || string.IsNullOrWhiteSpace(password.Text))
             {
                 await DisplayAlert("","Wszystkie pola muszą być uzupełnione","Ok");
@@ -55,11 +57,12 @@ namespace Kanapson
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PostAsync(url, data);
-                    response.EnsureSuccessStatusCode();
+                    
 
                     if (response.IsSuccessStatusCode)
                     {
-                        obj = JObject.Parse(response.Content.ReadAsStringAsync().Result)["tokenString"].ToString();
+                        obj = response.Content.ReadAsStringAsync().Result;
+                        //obj = JObject.Parse(response.Content.ReadAsStringAsync().Result)["tokenString"].ToString();
                         Application.Current.Properties["Token"] = obj;
                         
                         var jwtHandler = new JwtSecurityTokenHandler();
@@ -68,22 +71,24 @@ namespace Kanapson
                         var token = jwtHandler.ReadJwtToken(obj);
                         var jwtPayload = token.Claims.First(c => c.Type=="role" ).Value;
 
-                        if (jwtPayload == "Normal")
+                        if (jwtPayload == "User")
                             await Navigation.PushModalAsync(new UserMenu());
                         if (jwtPayload == "Admin")
                             await Navigation.PushModalAsync(new AdminMenu());
+                        username.Text = null;
+                        password.Text = null;
                         
                     }
                     else
                     {
-                        await DisplayAlert("Error",response.Content.ReadAsStringAsync().Result,"Ok");
+                        await DisplayAlert("Błąd", JObject.Parse(response.Content.ReadAsStringAsync().Result)["message"].ToString(), "Ok");
                     }
                     
                     
                 }
                 catch(Exception ex)
                 {
-                    await DisplayAlert("Error", ex.Message,"Ok");
+                    await DisplayAlert("Błąd", ex.Message,"Ok");
                 }
                 
             }
@@ -95,19 +100,16 @@ namespace Kanapson
         {
            await Navigation.PushModalAsync(new RegisterUser());
         }
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (await DisplayAlert("", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                    Thread.CurrentThread.Abort();
+            });
+            return true;
+        }
 
-        //public async void LoadData()
-        //{
-        //    user = new User();
-        //    var content = "";
-        //    HttpClient client = new HttpClient();
-        //    var RestURL = "http://localhost:4000/users/authenticate";
-        //client.BaseAddress = new Uri(RestURL);
-        //    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        //    HttpResponseMessage response = await client.PostAsync(RestURL);
-        //    content = await request();
-        //    var Items = JsonConvert.DeserializeObject<User>(content);
-        //    user.Token = Items.Token;
-        //}
+
     }
 }

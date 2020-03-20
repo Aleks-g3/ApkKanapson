@@ -3,40 +3,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              mc:Ignorable="d"
              x:Class="Kanapson.ListOrders">
     <ContentPage.Content>
-        <StackLayout>
-            <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,0" Clicked="Back_Clicked"/>
-            <ListView x:Name="listOrders">
-                <ListView.Header>
-                    <Grid Padding="5">
-                        
-                        
-                        <Label Text="czas"  Grid.Column="0" Grid.Row="0"/>
-                        <Label Text="Produkty"  Grid.Column="1" Grid.Row="0"/>
-                        <Label Text="Użytkownik"  Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation"/>
-                        <Label Text="Status"  Grid.Column="3" Grid.Row="0" />
-                        <Label Text="Akcja" Grid.Column="4" Grid.Row="0"/>
-                    </Grid>
-                </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid HeightRequest="60" Padding="5,5,5,0" >
-                                
-                                
-                                <Label Grid.Column="0" Grid.Row="0"  Text="{Binding orderTimes}" />
-                                <Label Grid.Column="1" Grid.Row="0"  Text="{Binding Product_order}" LineBreakMode="TailTruncation" />
-                                <Label Grid.Column="2" Grid.Row="0"  Text="{Binding user}" />
-                                <Label Grid.Column="3" Grid.Row="0"  Text="{Binding Status}" />
-                                <Button x:Name="action" Grid.Column="4" Grid.Row="0" Text="gotowe do odebrania" Clicked="action_Clicked"/>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
-        </StackLayout>
+        <AbsoluteLayout Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <Button x:Name="Back" Text="Powrót" Padding="0" Margin="0,0,200,0" Clicked="Back_Clicked"/>
+                <ListView x:Name="listOrders" RowHeight="100" android:ListView.IsFastScrollEnabled="true" IsPullToRefreshEnabled="True">
+                    <ListView.Header>
+                        <Grid Padding="5">
+
+
+                            <Label Text="czas"  Grid.Column="0" Grid.Row="0"/>
+                            <Label Text="Produkty"  Grid.Column="1" Grid.Row="0"/>
+                            <Label Text="Użytkownik"  Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation"/>
+                            <Label Text="Status"  Grid.Column="3" Grid.Row="0" />
+                            <Label Text="Akcja" Grid.Column="4" Grid.Row="0"/>
+                        </Grid>
+                    </ListView.Header>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid x:Name="grid"  Padding="5,5,5,0" >
+
+
+                                    <Label Grid.Column="0" Grid.Row="0"  Text="{Binding orderTimes}" />
+                                    <Button x:Name="showProducts" Grid.Column="1" Grid.Row="0"  Text="Pokaż"  Clicked="showProducts_Clicked"/>
+                                    <Label Grid.Column="2" Grid.Row="0"  Text="{Binding User.Username}" />
+                                    <Label Grid.Column="3" Grid.Row="0"  Text="{Binding Status}" />
+                                    <Button x:Name="action" Grid.Column="4" Grid.Row="0" Text="gotowe do odebrania" Clicked="action_Clicked"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </StackLayout>
+            <ContentView x:Name="popupProducts"  IsVisible="False" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <StackLayout Orientation="Vertical" HeightRequest="200" WidthRequest="300" BackgroundColor="White">
+                        <Button x:Name="Close" Text="Zamknij" Clicked="Close_Clicked"/>
+                        <ListView x:Name="listProducts" android:ListView.IsFastScrollEnabled="true">
+                            <ListView.Header>
+                                <Grid Padding="5">
+                                    <Label Text="Produkt" Grid.Column="0" Grid.Row="0"/>
+                                    <Label Text="Ilość" Grid.Column="1" Grid.Row="0"/>
+                                </Grid>
+                            </ListView.Header>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <Grid Padding="5">
+                                            <Label Text="{Binding product.Name}" Grid.Column="0" Grid.Row="0"/>
+                                            <Label Text="{Binding count}" Grid.Column="1" Grid.Row="0"/>
+                                        </Grid>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackLayout>
+                </StackLayout>
+            </ContentView>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

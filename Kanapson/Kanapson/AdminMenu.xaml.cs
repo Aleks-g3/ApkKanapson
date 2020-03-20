@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -53,22 +54,34 @@ namespace Kanapson
 
         private async void Logout_Clicked(object sender, EventArgs e)
         {
-            Application.Current.Properties["Token"] = null;
-            await Navigation.PopModalAsync();
-
-        }
-
-        private async void Exit_Clicked(object sender, EventArgs e)
-        {
             try
             {
                 Xamarin.Forms.Application.Current.Properties.Clear();
-                Application.Current.Quit();
+                await Navigation.PopModalAsync();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.ToString(), "Ok");
+                await DisplayAlert("Błąd", ex.Message, "Ok");
             }
+
+        }
+
+        private  void Exit_Clicked(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async() =>
+            {
+                if(await DisplayAlert("","Czy chcesz wyjść z aplikacji?","Tak","Nie"))
+                      Thread.CurrentThread.Abort();
+            });
+        }
+        protected override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (await DisplayAlert("", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                    Thread.CurrentThread.Abort();
+            });
+            return true;
         }
     }
 }

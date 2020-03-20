@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:local="clr-namespace:Kanapson.Behavior"
              mc:Ignorable="d"
              x:Class="Kanapson.ListProducts">
     <ContentPage.Content>
         <StackLayout Margin="0,0,0,50">
             <Button x:Name="back" Margin="0,0,200,0" Text="Powrót" Clicked="back_Clicked"/>
-            <ListView x:Name="listProduct" Margin="10,0,0,0" IsPullToRefreshEnabled="True" RowHeight="100" >
+            <ListView x:Name="listProduct" Margin="10,0,0,0" IsPullToRefreshEnabled="True" RowHeight="100" android:ListView.IsFastScrollEnabled="true">
 
                 <ListView.Header>
                     
@@ -29,10 +30,18 @@
                             <ViewCell.View>
                                 <Grid >
                                     <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
-                                    <Editor Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" MaxLength="2" Keyboard="Numeric"/>
-                                    <Editor x:Name="Price" Grid.Row="0" Grid.Column="2" Text="{Binding Price}" Keyboard="Numeric"/>
+                                    <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" MaxLength="2" Keyboard="Numeric">
+                                        <Entry.Behaviors>
+                                            <local:NumericValidationBehavior />
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                    <Entry x:Name="Price" Grid.Row="0" Grid.Column="2" Text="{Binding Price}" Keyboard="Numeric">
+                                        <Entry.Behaviors>
+                                            <local:NumericValidationBehavior />
+                                        </Entry.Behaviors>
+                                    </Entry>
                                     <Button x:Name="update" Grid.Row="0" Grid.Column="3" Text="Zmień" Clicked="update_Clicked" />
-                                    <Button x:Name="delete" Grid.Row="1" Grid.Column="3" Text="Usuń"/>
+                                    <Button x:Name="delete" Grid.Row="1" Grid.Column="3" Text="Usuń" Clicked="delete_Clicked"/>
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
@@ -44,9 +53,9 @@
 
                     <Grid  x:Name="AddView" Padding="0" Margin="0,-100,0,0" >
 
-                <Editor x:Name="Name" Placeholder="Nazwa" Grid.Column="0" Grid.Row="0"/>
-                <Editor x:Name="Amount" Placeholder="Ilość" Grid.Column="1" Grid.Row="0"/>
-                <Editor x:Name="Price" Placeholder="Cena" Grid.Column="2" Grid.Row="0"/>
+                <Entry x:Name="Name" Placeholder="Nazwa" Grid.Column="0" Grid.Row="0"/>
+                <Entry x:Name="Amount" Placeholder="Ilość" Grid.Column="1" Grid.Row="0"/>
+                <Entry x:Name="Price" Placeholder="Cena" Grid.Column="2" Grid.Row="0"/>
                 <Button x:Name="AddProduct" Text="Dodaj" Clicked="AddProduct_Clicked" Grid.Column="3" Grid.Row="0"/>
                     </Grid>
 

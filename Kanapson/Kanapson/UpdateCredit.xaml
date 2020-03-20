@@ -25,7 +25,7 @@
                         <ViewCell>
                             <Grid >
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding Username}"/>
-                                <Editor Grid.Row="0" Grid.Column="1" Text="{Binding Credit}"/>
+                                <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Credit}" Keyboard="Numeric"/>
                                 <Button Grid.Row="0" Grid.Column="2" Text="Doładuj" Clicked="update_Clicked"/>
                             </Grid>
                         </ViewCell>
