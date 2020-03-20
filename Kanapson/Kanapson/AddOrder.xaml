@@ -24,7 +24,7 @@
                         <ViewCell>
                             <Grid  HeightRequest="60" Padding="5,5,5,0">
                                 <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" LineBreakMode="NoWrap"/>
-                                <Entry x:Name="counter" Grid.Row="0" Grid.Column="1" MaxLength="2" Text="1" Keyboard="Numeric"/>
+                                <Entry x:Name="counter" Grid.Row="0" Grid.Column="1" MaxLength="2" Text="" Keyboard="Numeric"/>
                                 <Label Grid.Row="0" Grid.Column="2" Text="{Binding Amount}" LineBreakMode="NoWrap"/>
                                 <Label Grid.Row="0" Grid.Column="3" Text="{Binding Price}" LineBreakMode="NoWrap"/>
                                 <Button x:Name="addProduct" Grid.Row="0" Grid.Column="4" Text="Dodaj" Clicked="addProduct_Clicked"/>
