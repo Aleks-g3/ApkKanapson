@@ -16,7 +16,7 @@ namespace Kanapson
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RegisterUser : ContentPage
     {
-       const string url = "http://192.168.1.4:4000/users/register";
+       const string url = "https://kanapson.pl/users/register";
         HttpClient client;
         User user;
         public RegisterUser()

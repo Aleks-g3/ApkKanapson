@@ -22,8 +22,8 @@ namespace Kanapson
         private HttpClient client;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
-        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
-        string urlupdateUser = "http://192.168.1.4:4000/users/updatepass";
+        string urlUser = "https://kanapson.pl/users/findbyid/";
+        string urlupdateUser = "https://kanapson.pl/users/updatepass";
 
         public ChangePassword()
         {

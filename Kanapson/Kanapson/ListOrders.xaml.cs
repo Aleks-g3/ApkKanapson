@@ -22,8 +22,8 @@ namespace Kanapson
         private HttpClient client;
         private ObservableCollection<Order> orders;
 
-        string urlOrder = "http://192.168.1.4:4000/orders/status";
-        string urlupdateOrder = "http://192.168.1.4:4000/orders/update";
+        string urlOrder = "https://kanapson.pl/orders/status";
+        string urlupdateOrder = "https://kanapson.pl/orders/update";
         private Order order;
 
         public ListOrders()

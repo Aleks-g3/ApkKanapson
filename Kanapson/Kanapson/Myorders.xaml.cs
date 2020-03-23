@@ -19,7 +19,7 @@ namespace Kanapson
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Myorders : ContentPage
     {
-        string urlOrder = "http://192.168.1.4:4000/orders/findid/";
+        string urlOrder = "https://kanapson.pl/orders/findid/";
         private HttpClient client;
         private ObservableCollection<Order> myOders;
         private string jwtPayload;

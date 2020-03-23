@@ -20,7 +20,7 @@ namespace Kanapson
         private HttpClient client;
         private User user;
 
-        const string url = "http://192.168.1.4:4000/users/registeradmin";
+        const string url = "https://kanapson.pl/users/registeradmin";
         public RegisterAdmin()
         {
             InitializeComponent();

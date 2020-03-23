@@ -21,7 +21,7 @@ namespace Kanapson
         private HttpClient client;
         private JwtSecurityTokenHandler jwtHandler;
         private string jwtPayload;
-        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
+        string urlUser = "https://kanapson.pl/users/findbyid/";
         private User user;
 
         public AmountCredit()

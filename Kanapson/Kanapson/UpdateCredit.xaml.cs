@@ -20,8 +20,8 @@ namespace Kanapson
     {
         private HttpClient client;
         
-        string urlUser = "http://192.168.1.4:4000/users/finduser/";
-        string urlUpdateUser= "http://192.168.1.4:4000/users/updateCredit";
+        string urlUser = "https://kanapson.pl/users/finduser/";
+        string urlUpdateUser= "https://kanapson.pl/users/updateCredit";
         User user;
         private ObservableCollection<User> users;
 

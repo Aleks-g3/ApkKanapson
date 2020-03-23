@@ -21,9 +21,9 @@ namespace Kanapson
         private HttpClient client;
         private ObservableCollection<Product> products;
 
-        string urlProduct = "http://192.168.1.4:4000/products/gettoorder";
-        string urladdOrder = "http://192.168.1.4:4000/orders/add";
-        string urlUser = "http://192.168.1.4:4000/users/findbyid/";
+        string urlProduct = "https://kanapson.pl/products/gettoorder";
+        string urladdOrder = "https://kanapson.pl/orders/add";
+        string urlUser = "https://kanapson.pl/users/findbyid/";
         private Order order;
         double sum;
         private JwtSecurityTokenHandler jwtHandler;

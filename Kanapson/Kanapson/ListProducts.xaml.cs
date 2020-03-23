@@ -22,8 +22,8 @@ namespace Kanapson
         private HttpClient client;
         private ObservableCollection<Product> products;
 
-        string urlProduct = "http://192.168.1.4:4000/products";
-        string urladdProduct = "http://192.168.1.4:4000/products/addproduct";
+        string urlProduct = "https://kanapson.pl/products";
+        string urladdProduct = "https://kanapson.pl/products/addproduct";
         
         private Product product;
 
